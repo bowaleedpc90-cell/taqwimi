@@ -32,3 +32,11 @@ export const HOLIDAY_TYPE_LABEL: Record<HolidayType, string> = {
   religious: 'مناسبة دينية',
   custom: 'عطلة خاصة',
 };
+
+// خلفية/نص ناعمة حسب نوع العطلة — موحّدة عبر الشاشة والإدارة (ولاحقًا الطباعة).
+export const HOLIDAY_TYPE_TINT: Record<HolidayType, string> = {
+  national: 'bg-national-soft text-national',
+  government: 'bg-gold-soft text-gold',
+  religious: 'bg-religious-soft text-religious',
+  custom: 'bg-navy-50 text-navy',
+};

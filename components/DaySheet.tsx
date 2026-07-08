@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { CATEGORIES, CATEGORY_ORDER, COLOR_SWATCHES, AR_MONTHS, AR_WEEKDAYS } from '@/lib/constants';
+import { CATEGORIES, CATEGORY_ORDER, COLOR_SWATCHES, AR_MONTHS, AR_WEEKDAYS, HOLIDAY_TYPE_TINT } from '@/lib/constants';
 import { dayOfWeek, parseYMD } from '@/lib/dateUtils';
-import { getHolidayForDate } from '@/lib/kuwaitHolidayService';
+import { getEffectiveHolidayForDate } from '@/lib/kuwaitHolidayService';
 import { uid } from '@/lib/storage';
 import type { Category, DayItem } from '@/lib/types';
 import { useApp } from './AppStateProvider';
@@ -18,7 +18,7 @@ function fullDate(iso: string): string {
 export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void }) {
   const { state, update } = useApp();
 
-  const holiday = useMemo(() => getHolidayForDate(iso, state.customHolidays), [iso, state.customHolidays]);
+  const holiday = useMemo(() => getEffectiveHolidayForDate(iso, state), [iso, state]);
   const dayItems = useMemo(() => state.items.filter((i) => i.date === iso), [state.items, iso]);
   const note = state.dayNotes[iso] ?? '';
 
@@ -82,11 +82,7 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
   return (
     <BottomSheet open onClose={onClose} title={fullDate(iso)} subtitle="أضف مناسباتك ونوتة اليوم">
       {holiday && (
-        <div
-          className={`mb-4 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold ${
-            holiday.type === 'national' ? 'bg-national-soft text-national' : 'bg-religious-soft text-religious'
-          }`}
-        >
+        <div className={`mb-4 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold ${HOLIDAY_TYPE_TINT[holiday.type]}`}>
           <span aria-hidden>📅</span>
           <span>{holiday.nameAr}</span>
           {holiday.isEstimated && <EstimatedBadge className="ms-auto" />}

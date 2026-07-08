@@ -4,6 +4,7 @@ export type HolidayType = 'national' | 'religious' | 'government' | 'custom';
 
 export interface Holiday {
   id: string;
+  slug?: string;         // معرّف ثابت للعطلة الرسمية (مستقل عن التاريخ) — لتطبيق تعديلات المستخدم
   nameAr: string;
   nameEn: string;
   gregorianDate: string; // "YYYY-MM-DD"
@@ -12,6 +13,19 @@ export interface Holiday {
   isConfirmed: boolean;
   isEstimated: boolean;
   notes?: string;
+  isCustom?: boolean;    // true إذا أضافها المستخدم (وليست عطلة رسمية مضمّنة)
+}
+
+/**
+ * تعديل يجريه المستخدم على عطلة رسمية مضمّنة، مفتاحه `${year}-${slug}`.
+ * الحقول غير المحدّدة تبقى على قيمة العطلة الأصلية.
+ */
+export interface HolidayOverride {
+  deleted?: boolean;        // إخفاء هذه العطلة الرسمية
+  gregorianDate?: string;   // "YYYY-MM-DD" — تاريخ معدّل
+  nameAr?: string;          // اسم معدّل
+  type?: HolidayType;       // نوع معدّل
+  confirmed?: boolean;      // ثبّتها المستخدم كمؤكّدة (تُزال شارة «تقديري»)
 }
 
 export type Category = 'event' | 'birthday' | 'leave' | 'work' | 'other';
@@ -35,10 +49,11 @@ export interface Settings {
 }
 
 export interface AppState {
-  version: 1;
+  version: 2;
   settings: Settings;
-  items: DayItem[];                      // كل الإضافات (مسطّحة)
-  dayNotes: Record<string, string>;      // iso -> نص النوت داخل اليوم
-  generalNotes: Record<string, string>;  // "YYYY-MM" -> نص النوت العام
-  customHolidays: Holiday[];             // عطل خاصة يضيفها المستخدم
+  items: DayItem[];                              // كل الإضافات (مسطّحة)
+  dayNotes: Record<string, string>;              // iso -> نص النوت داخل اليوم
+  generalNotes: Record<string, string>;          // "YYYY-MM" -> نص النوت العام
+  customHolidays: Holiday[];                     // عطل/مناسبات أضافها المستخدم
+  holidayOverrides: Record<string, HolidayOverride>; // "YYYY-slug" -> تعديل على عطلة رسمية
 }

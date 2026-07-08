@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { parseYMD } from '@/lib/dateUtils';
+import { effectiveHolidayMap } from '@/lib/kuwaitHolidayService';
+import type { Holiday } from '@/lib/types';
 import { useApp } from './AppStateProvider';
 import { useToday } from '@/hooks/useToday';
 import { ViewToggle } from './ViewToggle';
@@ -18,6 +20,10 @@ export function YearView() {
   }, [today, year]);
 
   const itemDates = useMemo(() => new Set(state.items.map((i) => i.date)), [state.items]);
+  const holidays = useMemo(
+    () => (year === null ? new Map<string, Holiday>() : effectiveHolidayMap(year, state)),
+    [year, state],
+  );
 
   if (!hydrated || year === null) {
     return <div className="h-[70dvh] animate-pulse rounded-xl2 bg-navy-50/60" />;
@@ -68,6 +74,7 @@ export function YearView() {
             todayISO={today}
             dayNotes={state.dayNotes}
             itemDates={itemDates}
+            holidays={holidays}
           />
         ))}
       </div>

@@ -7,11 +7,13 @@ export function CalendarGrid({
   cells,
   weekendCols,
   onSelectDay,
+  onLongPressDay,
 }: {
   weekdayLabels: string[];
   cells: CellVM[]; // 42
   weekendCols: boolean[]; // 7 — أي أعمدة نهاية أسبوع
   onSelectDay: (iso: string) => void;
+  onLongPressDay: (iso: string) => void;
 }) {
   return (
     <div className="card overflow-hidden p-2">
@@ -29,7 +31,7 @@ export function CalendarGrid({
       </div>
       <div className="grid grid-cols-7 gap-1">
         {cells.map((vm, i) => (
-          <DayCell key={vm.cell.iso ?? `pad-${i}`} vm={vm} onSelect={onSelectDay} />
+          <DayCell key={vm.cell.iso ?? `pad-${i}`} vm={vm} onSelect={onSelectDay} onLongPress={onLongPressDay} />
         ))}
       </div>
     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { defaultState } from '@/lib/storage';
 import { useApp } from './AppStateProvider';
 import { ToggleRow } from './ToggleRow';
@@ -43,6 +44,17 @@ export function SettingsScreen() {
           onChange={(v) => set({ showNotes: v })}
         />
       </section>
+
+      <Link href="/holidays" className="card mb-3 flex items-center gap-3 p-4 transition active:scale-[0.99]">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy-50 text-lg" aria-hidden>📅</span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-bold text-navy">إدارة العطل والمناسبات</span>
+          <span className="mt-0.5 block text-xs text-muted">عدّل تواريخ العطل، احذفها، أو أضف مناسبات خاصة</span>
+        </span>
+        <span className="text-muted" aria-hidden>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+        </span>
+      </Link>
 
       <section className="card p-4">
         <div className="mb-1 font-bold text-red-600">تصفير البيانات</div>

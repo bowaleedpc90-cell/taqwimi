@@ -1,6 +1,6 @@
 import { buildMonthGrid, type DayCellModel } from './calendarEngine';
 import { formatMonthTitle, monthKey } from './dateUtils';
-import { holidayMap } from './kuwaitHolidayService';
+import { effectiveHolidayMap } from './kuwaitHolidayService';
 import type { AppState, DayItem, Holiday } from './types';
 
 export interface PrintDayVM {
@@ -25,7 +25,10 @@ export interface PrintMonthVM {
 function buildDayVM(cell: DayCellModel, state: AppState, hmap: Map<string, Holiday>): PrintDayVM {
   const { settings } = state;
   const holiday = cell.iso ? hmap.get(cell.iso) : undefined;
-  const showHoliday = !!holiday && (holiday.isEstimated ? settings.showReligious : settings.showHolidays);
+  // نفس منطق الشاشة: المناسبات الخاصة تظهر دائمًا؛ الدينية تتبع showReligious والرسمية showHolidays.
+  const showHoliday =
+    !!holiday &&
+    (holiday.type === 'custom' ? true : holiday.isEstimated ? settings.showReligious : settings.showHolidays);
   const items = cell.iso ? state.items.filter((it) => it.date === cell.iso) : [];
   const dayNote = cell.iso && settings.showNotes ? state.dayNotes[cell.iso] : undefined;
   return {
@@ -47,7 +50,7 @@ export function buildPrintMonth(state: AppState, year: number, month: number): P
     weekendDows: state.settings.weekendDows,
     todayISO: '',
   });
-  const hmap = holidayMap(year, state.customHolidays);
+  const hmap = effectiveHolidayMap(year, state);
   const cells = grid.cells.map((c) => buildDayVM(c, state, hmap));
   const gn = state.settings.showNotes ? state.generalNotes[monthKey(year, month)] : undefined;
   return {

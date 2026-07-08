@@ -3,6 +3,7 @@
 import { CATEGORIES } from '@/lib/constants';
 import type { DayCellModel } from '@/lib/calendarEngine';
 import type { DayItem, Holiday } from '@/lib/types';
+import { useLongPress } from '@/hooks/useLongPress';
 import { EstimatedBadge } from './EstimatedBadge';
 
 export interface CellVM {
@@ -30,8 +31,17 @@ function holidayTextColor(holiday: Holiday): string {
   return 'text-religious';
 }
 
-export function DayCell({ vm, onSelect }: { vm: CellVM; onSelect: (iso: string) => void }) {
+export function DayCell({
+  vm,
+  onSelect,
+  onLongPress,
+}: {
+  vm: CellVM;
+  onSelect: (iso: string) => void;
+  onLongPress?: (iso: string) => void;
+}) {
   const { cell, holiday, items, hasNote } = vm;
+  const { longFired, handlers } = useLongPress(() => cell.iso && onLongPress?.(cell.iso));
 
   if (!cell.inMonth || !cell.iso) {
     return <div className="rounded-lg bg-transparent" aria-hidden />;
@@ -44,7 +54,15 @@ export function DayCell({ vm, onSelect }: { vm: CellVM; onSelect: (iso: string) 
   return (
     <button
       type="button"
-      onClick={() => onSelect(iso)}
+      {...handlers}
+      onClick={() => {
+        if (longFired.current) {
+          longFired.current = false;
+          return;
+        }
+        onSelect(iso);
+      }}
+      onContextMenu={(e) => e.preventDefault()}
       className={`print-day relative flex min-h-[64px] flex-col items-stretch rounded-lg border p-1 text-start transition active:scale-[0.97] ${holidayTint(
         holiday,
         cell.isWeekend,

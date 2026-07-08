@@ -11,16 +11,17 @@ export const DEFAULT_SETTINGS: Settings = {
 
 export function defaultState(): AppState {
   return {
-    version: 1,
+    version: 2,
     settings: { ...DEFAULT_SETTINGS },
     items: [],
     dayNotes: {},
     generalNotes: {},
     customHolidays: [],
+    holidayOverrides: {},
   };
 }
 
-/** قراءة محميّة مع deep-merge فوق الافتراضي حتى لا ترجع مفاتيح إعدادات جديدة undefined. */
+/** قراءة محميّة مع deep-merge فوق الافتراضي حتى لا ترجع مفاتيح جديدة undefined (تهاجر v1→v2). */
 export function loadState(): AppState {
   if (typeof window === 'undefined') return defaultState();
   const d = defaultState();
@@ -29,12 +30,14 @@ export function loadState(): AppState {
     if (!raw) return d;
     const p = JSON.parse(raw) as Partial<AppState>;
     return {
-      version: 1,
+      version: 2,
       settings: { ...d.settings, ...(p.settings || {}) },
       items: Array.isArray(p.items) ? p.items : [],
       dayNotes: p.dayNotes && typeof p.dayNotes === 'object' ? p.dayNotes : {},
       generalNotes: p.generalNotes && typeof p.generalNotes === 'object' ? p.generalNotes : {},
       customHolidays: Array.isArray(p.customHolidays) ? p.customHolidays : [],
+      holidayOverrides:
+        p.holidayOverrides && typeof p.holidayOverrides === 'object' ? p.holidayOverrides : {},
     };
   } catch {
     return d;

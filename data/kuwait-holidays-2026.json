@@ -1,9 +1,10 @@
 {
   "year": 2026,
-  "source": "إعلانات ديوان الخدمة المدنية الكويتي 2026 (الوطنية مؤكدة؛ الدينية تقديرية على أساس التقويم الهجري المدني/العجيري)",
+  "source": "عطل الكويت الرسمية 2026 (ديوان الخدمة المدنية). عطل النصف الأول (يناير–يونيو) مضت وتأكدت رسميًا؛ المولد النبوي (أغسطس) لا يزال تقديريًا حسب رؤية الهلال.",
   "holidays": [
     {
-      "id": "government-2026-01-01",
+      "id": "2026-new-year",
+      "slug": "new-year",
       "nameAr": "رأس السنة الميلادية",
       "nameEn": "New Year's Day",
       "gregorianDate": "2026-01-01",
@@ -12,18 +13,19 @@
       "isEstimated": false
     },
     {
-      "id": "religious-2026-01-18",
+      "id": "2026-isra-miraj",
+      "slug": "isra-miraj",
       "nameAr": "الإسراء والمعراج",
       "nameEn": "Isra & Mi'raj",
-      "gregorianDate": "2026-01-18",
+      "gregorianDate": "2026-01-16",
       "hijriDate": "1447-07-27",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "national-2026-02-25",
+      "id": "2026-national-day",
+      "slug": "national-day",
       "nameAr": "العيد الوطني",
       "nameEn": "National Day",
       "gregorianDate": "2026-02-25",
@@ -32,7 +34,8 @@
       "isEstimated": false
     },
     {
-      "id": "national-2026-02-26",
+      "id": "2026-liberation-day",
+      "slug": "liberation-day",
       "nameAr": "عيد التحرير",
       "nameEn": "Liberation Day",
       "gregorianDate": "2026-02-26",
@@ -41,95 +44,96 @@
       "isEstimated": false
     },
     {
-      "id": "religious-2026-03-20",
+      "id": "2026-eid-fitr-1",
+      "slug": "eid-fitr-1",
       "nameAr": "عيد الفطر",
       "nameEn": "Eid al-Fitr",
       "gregorianDate": "2026-03-20",
       "hijriDate": "1447-10-01",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-03-21",
+      "id": "2026-eid-fitr-2",
+      "slug": "eid-fitr-2",
       "nameAr": "عيد الفطر - ثاني أيام العيد",
       "nameEn": "Eid al-Fitr (Day 2)",
       "gregorianDate": "2026-03-21",
       "hijriDate": "1447-10-02",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-03-22",
+      "id": "2026-eid-fitr-3",
+      "slug": "eid-fitr-3",
       "nameAr": "عيد الفطر - ثالث أيام العيد",
       "nameEn": "Eid al-Fitr (Day 3)",
       "gregorianDate": "2026-03-22",
       "hijriDate": "1447-10-03",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-05-26",
+      "id": "2026-arafah",
+      "slug": "arafah",
       "nameAr": "وقفة عرفات",
       "nameEn": "Arafah Day",
       "gregorianDate": "2026-05-26",
       "hijriDate": "1447-12-09",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-05-27",
+      "id": "2026-eid-adha-1",
+      "slug": "eid-adha-1",
       "nameAr": "عيد الأضحى",
       "nameEn": "Eid al-Adha",
       "gregorianDate": "2026-05-27",
       "hijriDate": "1447-12-10",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-05-28",
+      "id": "2026-eid-adha-2",
+      "slug": "eid-adha-2",
       "nameAr": "عيد الأضحى - ثاني أيام العيد",
       "nameEn": "Eid al-Adha (Day 2)",
       "gregorianDate": "2026-05-28",
       "hijriDate": "1447-12-11",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-05-29",
+      "id": "2026-eid-adha-3",
+      "slug": "eid-adha-3",
       "nameAr": "عيد الأضحى - ثالث أيام العيد",
       "nameEn": "Eid al-Adha (Day 3)",
       "gregorianDate": "2026-05-29",
       "hijriDate": "1447-12-12",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-06-17",
+      "id": "2026-islamic-new-year",
+      "slug": "islamic-new-year",
       "nameAr": "رأس السنة الهجرية",
       "nameEn": "Islamic New Year",
-      "gregorianDate": "2026-06-17",
+      "gregorianDate": "2026-06-16",
       "hijriDate": "1448-01-01",
       "type": "religious",
-      "isConfirmed": false,
-      "isEstimated": true,
-      "notes": "تقديري — يعتمد على رؤية الهلال"
+      "isConfirmed": true,
+      "isEstimated": false
     },
     {
-      "id": "religious-2026-08-27",
+      "id": "2026-prophet-birthday",
+      "slug": "prophet-birthday",
       "nameAr": "المولد النبوي الشريف",
       "nameEn": "Prophet's Birthday",
       "gregorianDate": "2026-08-27",

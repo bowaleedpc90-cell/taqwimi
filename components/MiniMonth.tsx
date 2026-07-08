@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { buildMonthGrid } from '@/lib/calendarEngine';
 import { AR_MONTHS } from '@/lib/constants';
-import { holidayMap } from '@/lib/kuwaitHolidayService';
 import type { Holiday, Settings } from '@/lib/types';
 
 function tint(h: Holiday | undefined, isWeekend: boolean, settings: Settings): string {
@@ -27,6 +26,7 @@ export function MiniMonth({
   todayISO,
   dayNotes,
   itemDates,
+  holidays,
 }: {
   year: number;
   month: number;
@@ -34,6 +34,7 @@ export function MiniMonth({
   todayISO: string;
   dayNotes: Record<string, string>;
   itemDates: Set<string>;
+  holidays: Map<string, Holiday>;
 }) {
   const grid = buildMonthGrid({
     year,
@@ -42,7 +43,6 @@ export function MiniMonth({
     weekendDows: settings.weekendDows,
     todayISO,
   });
-  const hmap = holidayMap(year, []);
   const weekendCols = grid.weekdayLabelsShort.map((_, i) =>
     settings.weekendDows.includes((settings.weekStart + i) % 7),
   );
@@ -61,7 +61,7 @@ export function MiniMonth({
         ))}
         {grid.cells.map((cell, i) => {
           if (!cell.inMonth || !cell.iso) return <div key={`p${i}`} />;
-          const h = hmap.get(cell.iso);
+          const h = holidays.get(cell.iso);
           const hasNote = settings.showNotes && (!!dayNotes[cell.iso] || itemDates.has(cell.iso));
           return (
             <div

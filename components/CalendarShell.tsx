@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { buildMonthGrid } from '@/lib/calendarEngine';
 import { formatMonthTitle, monthKey, parseYMD, shiftMonth } from '@/lib/dateUtils';
-import { holidayMap } from '@/lib/kuwaitHolidayService';
+import { effectiveHolidayMap } from '@/lib/kuwaitHolidayService';
 import type { Holiday, Settings } from '@/lib/types';
 import { useApp } from './AppStateProvider';
 import { useToday } from '@/hooks/useToday';
@@ -15,6 +15,7 @@ import { DaySheet } from './DaySheet';
 import type { CellVM } from './DayCell';
 import { ViewToggle } from './ViewToggle';
 import { BrandFooter } from './BrandFooter';
+import { HolidayEditSheets, builtinEditingFor, type HolidayEditing } from './HolidayEditSheets';
 
 function visibleHoliday(h: Holiday | undefined, settings: Settings): Holiday | undefined {
   if (!h) return undefined;
@@ -28,6 +29,7 @@ export function CalendarShell() {
   const today = useToday();
   const [ym, setYm] = useState<{ y: number; m: number } | null>(null);
   const [sheetDate, setSheetDate] = useState<string | null>(null);
+  const [holidayEdit, setHolidayEdit] = useState<HolidayEditing>(null);
 
   // تهيئة: أولوية لمعاملات الرابط (?y&m من عرض السنة)، وإلا الشهر الحالي بتوقيت الكويت
   useEffect(() => {
@@ -56,7 +58,7 @@ export function CalendarShell() {
       weekendDows: state.settings.weekendDows,
       todayISO: today,
     });
-    const hmap = holidayMap(ym.y, state.customHolidays);
+    const hmap = effectiveHolidayMap(ym.y, state);
     const itemsByDate: Record<string, typeof state.items> = {};
     for (const it of state.items) (itemsByDate[it.date] ||= []).push(it);
 
@@ -85,6 +87,19 @@ export function CalendarShell() {
 
   const mk = monthKey(ym.y, ym.m);
 
+  // ضغط مطوّل على يوم: تعديل عطلته إن وُجدت، وإلا إضافة عطلة/مناسبة على تاريخه
+  function onLongPressDay(iso: string) {
+    const yr = Number(iso.slice(0, 4));
+    const h = effectiveHolidayMap(yr, state).get(iso);
+    if (h?.isCustom && h.id) {
+      setHolidayEdit({ mode: 'custom', id: h.id, value: { nameAr: h.nameAr, gregorianDate: h.gregorianDate, type: h.type } });
+    } else if (h?.slug) {
+      setHolidayEdit(builtinEditingFor(yr, h.slug, state));
+    } else {
+      setHolidayEdit({ mode: 'add', date: iso });
+    }
+  }
+
   return (
     <div>
       <ViewToggle active="month" />
@@ -101,6 +116,7 @@ export function CalendarShell() {
           cells={view.cells}
           weekendCols={view.weekendCols}
           onSelectDay={setSheetDate}
+          onLongPressDay={onLongPressDay}
         />
       </div>
 
@@ -123,6 +139,8 @@ export function CalendarShell() {
       <BrandFooter />
 
       {sheetDate && <DaySheet iso={sheetDate} onClose={() => setSheetDate(null)} />}
+
+      <HolidayEditSheets year={ym.y} editing={holidayEdit} onClose={() => setHolidayEdit(null)} />
     </div>
   );
 }
