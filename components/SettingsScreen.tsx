@@ -6,12 +6,6 @@ import { useApp } from './AppStateProvider';
 import { ToggleRow } from './ToggleRow';
 import { BrandFooter } from './BrandFooter';
 
-const WEEK_START_OPTIONS = [
-  { value: 6, label: 'السبت' },
-  { value: 0, label: 'الأحد' },
-  { value: 1, label: 'الاثنين' },
-];
-
 export function SettingsScreen() {
   const { state, hydrated, update } = useApp();
   const [confirmReset, setConfirmReset] = useState(false);
@@ -28,25 +22,6 @@ export function SettingsScreen() {
       <h1 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-navy">
         <span aria-hidden>⚙️</span> الإعدادات
       </h1>
-
-      <section className="card mb-3 p-4">
-        <div className="mb-2 font-bold text-navy">بداية الأسبوع</div>
-        <div className="inline-flex w-full rounded-full bg-canvas p-1 text-sm font-bold">
-          {WEEK_START_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => set({ weekStart: opt.value })}
-              className={`flex-1 rounded-full px-3 py-2 transition ${
-                s.weekStart === opt.value ? 'bg-navy text-white shadow-sm' : 'text-muted'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-        <p className="mt-2 text-xs text-muted">نهاية الأسبوع (الجمعة والسبت) مميّزة تلقائيًا في الرزنامة.</p>
-      </section>
 
       <section className="card mb-3 px-4 py-1 divide-y divide-line">
         <ToggleRow

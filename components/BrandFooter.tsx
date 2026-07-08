@@ -3,7 +3,7 @@ const base = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 function InstagramGlyph() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
       <rect x="3" y="3" width="18" height="18" rx="5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
@@ -31,9 +31,8 @@ export function BrandFooter({ className = '' }: { className?: string }) {
         <span className="text-[11px] text-muted">تطوير وبرمجة</span>
         <span className="truncate text-sm font-extrabold text-navy">X Star Software</span>
       </span>
-      <span className="ms-auto inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#2176FF]/10 px-3 py-1.5 text-xs font-bold text-[#2176FF]">
+      <span className="ms-auto inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2176FF]/10 text-[#2176FF]">
         <InstagramGlyph />
-        تابعنا
       </span>
     </a>
   );

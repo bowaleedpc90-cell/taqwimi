@@ -2,6 +2,8 @@ import { CATEGORIES } from '@/lib/constants';
 import type { PrintDayVM, PrintMonthVM } from '@/lib/printTemplateEngine';
 import { EstimatedBadge } from './EstimatedBadge';
 
+const base = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 function cellBg(vm: PrintDayVM): string {
   if (!vm.inMonth) return 'bg-canvas';
   if (vm.holiday?.type === 'national') return 'bg-national-soft';
@@ -24,10 +26,7 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
     <section className="print-page mb-6 rounded-lg border border-line bg-white p-3 print:mb-0 print:rounded-none print:border-0">
       <header className="mb-2 flex items-baseline justify-between border-b-2 border-navy pb-2">
         <h2 className="text-xl font-extrabold text-navy">{vm.title}</h2>
-        <span className="flex items-baseline gap-2">
-          <span className="text-sm font-semibold text-gold">تقويمي</span>
-          <span className="text-[10px] text-muted">تطوير X Star Software</span>
-        </span>
+        <span className="text-sm font-semibold text-gold">تقويمي</span>
       </header>
 
       <div className="grid grid-cols-7 gap-px">
@@ -85,6 +84,14 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
           {vm.generalNote}
         </div>
       )}
+
+      <footer className="mt-3 flex items-center justify-center gap-3 border-t-2 border-navy pt-2.5">
+        <img src={`${base}/xstar-logo.svg`} alt="X Star Software" width={34} height={34} className="rounded-lg" />
+        <span className="flex flex-col leading-tight">
+          <span className="text-[13px] font-extrabold text-navy">X Star Software</span>
+          <span className="text-[11px] font-semibold text-[#2176FF]">xstarkw.com</span>
+        </span>
+      </footer>
     </section>
   );
 }
