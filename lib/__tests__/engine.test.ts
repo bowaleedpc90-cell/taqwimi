@@ -29,6 +29,7 @@ import {
   deleteCustomHoliday,
 } from '../holidayActions';
 import { buildPrintMonth } from '../printTemplateEngine';
+import { hijriMonthLabel } from '../hijriUtils';
 import { defaultState } from '../storage';
 
 test('isLeapYear', () => {
@@ -224,6 +225,17 @@ test('الطباعة — المناسبات الخاصة تظهر حتى مع إ
   assert.equal(jul.cells.find((c) => c.iso === '2026-07-10')!.holiday?.nameAr, 'مناسبتي');
   const jan = buildPrintMonth(st, 2026, 1);
   assert.equal(jan.cells.find((c) => c.iso === '2026-01-01')!.holiday, undefined); // رسمية مخفية
+});
+
+test('hijriMonthLabel — الحالات العادية (شهر/شهرين)', () => {
+  assert.equal(hijriMonthLabel(2026, 2), 'شعبان – رمضان 1447');
+  assert.equal(hijriMonthLabel(2026, 7), 'محرّم – صفر 1448');
+});
+
+test('hijriMonthLabel — شهر ميلادي يلامس ٣ أشهر هجرية لا يُسقط الأوسط', () => {
+  const label = hijriMonthLabel(2035, 12);
+  assert.ok(label.includes('شوّال'), `الأوسط مفقود: ${label}`);
+  assert.ok(label.includes('رمضان') && label.includes('ذو القعدة'), label);
 });
 
 test('todayInKuwait — صيغة YYYY-MM-DD', () => {

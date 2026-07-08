@@ -1,5 +1,6 @@
 import { buildMonthGrid, type DayCellModel } from './calendarEngine';
 import { formatMonthTitle, monthKey } from './dateUtils';
+import { hijriMonthLabel } from './hijriUtils';
 import { effectiveHolidayMap } from './kuwaitHolidayService';
 import type { AppState, DayItem, Holiday } from './types';
 
@@ -17,6 +18,7 @@ export interface PrintMonthVM {
   year: number;
   month: number;
   title: string;
+  hijriLabel: string;        // الشهر الهجري المقابل، مثل «محرّم – صفر ١٤٤٨»
   weekdayLabels: string[];
   cells: PrintDayVM[];       // 42
   generalNote?: string;
@@ -57,6 +59,7 @@ export function buildPrintMonth(state: AppState, year: number, month: number): P
     year,
     month,
     title: formatMonthTitle(year, month),
+    hijriLabel: hijriMonthLabel(year, month),
     weekdayLabels: grid.weekdayLabelsShort,
     cells,
     generalNote: gn || undefined,

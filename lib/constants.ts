@@ -9,6 +9,12 @@ export const AR_MONTHS = [
   'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
 ];
 
+// أسماء الأشهر الهجرية، الفهرس 0 = محرّم .. 11 = ذو الحجة
+export const AR_HIJRI_MONTHS = [
+  'محرّم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 'جمادى الأولى', 'جمادى الآخرة',
+  'رجب', 'شعبان', 'رمضان', 'شوّال', 'ذو القعدة', 'ذو الحجة',
+];
+
 // أسماء الأيام، الفهرس 0 = الأحد .. 6 = السبت
 export const AR_WEEKDAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 export const AR_WEEKDAYS_SHORT = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
@@ -33,10 +39,24 @@ export const HOLIDAY_TYPE_LABEL: Record<HolidayType, string> = {
   custom: 'عطلة خاصة',
 };
 
-// خلفية/نص ناعمة حسب نوع العطلة — موحّدة عبر الشاشة والإدارة (ولاحقًا الطباعة).
+// مصدر موحّد لألوان أنواع العطل — تُشتق منه الشاشة (DayCell)، الطباعة (PrintMonth)،
+// والإدارة/ورقة اليوم (TINT) حتى لا تنحرف الألوان بين الشاشة والطباعة.
+export const HOLIDAY_TYPE_BG: Record<HolidayType, string> = {
+  national: 'bg-national-soft',
+  government: 'bg-gold-soft',
+  religious: 'bg-religious-soft',
+  custom: 'bg-navy-50',
+};
+export const HOLIDAY_TYPE_TEXT: Record<HolidayType, string> = {
+  national: 'text-national',
+  government: 'text-gold',
+  religious: 'text-religious',
+  custom: 'text-navy',
+};
+// خلفية + نص معًا (للشارات في الإدارة وورقة اليوم).
 export const HOLIDAY_TYPE_TINT: Record<HolidayType, string> = {
-  national: 'bg-national-soft text-national',
-  government: 'bg-gold-soft text-gold',
-  religious: 'bg-religious-soft text-religious',
-  custom: 'bg-navy-50 text-navy',
+  national: `${HOLIDAY_TYPE_BG.national} ${HOLIDAY_TYPE_TEXT.national}`,
+  government: `${HOLIDAY_TYPE_BG.government} ${HOLIDAY_TYPE_TEXT.government}`,
+  religious: `${HOLIDAY_TYPE_BG.religious} ${HOLIDAY_TYPE_TEXT.religious}`,
+  custom: `${HOLIDAY_TYPE_BG.custom} ${HOLIDAY_TYPE_TEXT.custom}`,
 };

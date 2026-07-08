@@ -1,6 +1,6 @@
 'use client';
 
-import { CATEGORIES } from '@/lib/constants';
+import { CATEGORIES, HOLIDAY_TYPE_BG, HOLIDAY_TYPE_TEXT } from '@/lib/constants';
 import type { DayCellModel } from '@/lib/calendarEngine';
 import type { DayItem, Holiday } from '@/lib/types';
 import { useLongPress } from '@/hooks/useLongPress';
@@ -14,21 +14,13 @@ export interface CellVM {
 }
 
 function holidayTint(holiday?: Holiday, isWeekend?: boolean): string {
-  if (holiday) {
-    if (holiday.type === 'national') return 'bg-national-soft';
-    if (holiday.type === 'government') return 'bg-gold-soft';
-    if (holiday.type === 'custom') return 'bg-navy-50';
-    return 'bg-religious-soft'; // religious
-  }
+  if (holiday) return HOLIDAY_TYPE_BG[holiday.type];
   if (isWeekend) return 'bg-weekend';
   return 'bg-surface';
 }
 
 function holidayTextColor(holiday: Holiday): string {
-  if (holiday.type === 'national') return 'text-national';
-  if (holiday.type === 'government') return 'text-gold';
-  if (holiday.type === 'custom') return 'text-navy';
-  return 'text-religious';
+  return HOLIDAY_TYPE_TEXT[holiday.type];
 }
 
 export function DayCell({
