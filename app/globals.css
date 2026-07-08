@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #0b2a4a;
+  --gold: #c9a227;
+  --national: #15803d;
+  --religious: #b7791f;
+  --canvas: #f5f7fb;
+  --surface: #ffffff;
+  --line: #e6e9f0;
+  --ink: #1c2333;
+  --muted: #5b6472;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-cairo), var(--font-tajawal), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+  min-height: 100dvh;
+}
+
+/* أرقام لاتينية ذرّية لا تنعكس داخل RTL */
+.num {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes sheetUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-sheet {
+  animation: sheetUp 0.22s ease-out;
+}
+.animate-fade {
+  animation: fadeIn 0.18s ease-out;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl2 px-4 font-semibold transition active:scale-[0.98] disabled:opacity-50;
+    min-height: 48px;
+  }
+  .btn-primary {
+    @apply bg-navy text-white hover:bg-navy-700;
+  }
+  .btn-gold {
+    @apply bg-gold text-navy hover:bg-gold-light;
+  }
+  .btn-ghost {
+    @apply bg-navy-50 text-navy hover:bg-navy-100;
+  }
+  .btn-danger {
+    @apply bg-red-50 text-red-600 hover:bg-red-100;
+  }
+  .card {
+    @apply rounded-xl2 bg-surface shadow-card;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-canvas px-3 py-1.5 text-sm;
+    min-height: 38px;
+  }
+  .field {
+    @apply w-full rounded-xl border border-line bg-canvas px-3 py-3 text-base outline-none focus:border-navy focus:ring-2 focus:ring-navy/15;
+  }
+}
+
+/* ============================ الطباعة ============================ */
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+    overflow: visible !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .app-shell {
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  .app-main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .print-root {
+    display: block !important;
+  }
+  /* شهر واحد لكل صفحة A4 */
+  .print-page {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .print-page + .print-page {
+    break-before: page;
+    page-break-before: always;
+  }
+  /* صفوف الجدول لا تنكسر بين الصفحات */
+  .cal-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  /* النص العربي لا يُقص */
+  .print-day,
+  .holiday-name,
+  .day-note,
+  .general-note {
+    overflow: visible !important;
+    white-space: normal !important;
+  }
+}

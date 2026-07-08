@@ -1,0 +1,56 @@
+'use client';
+
+function Chevron({ dir }: { dir: 'prev' | 'next' }) {
+  // في RTL: السابق = سهم يمين (رجوع)، التالي = سهم يسار (تقدّم)
+  const d = dir === 'prev' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7';
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} />
+    </svg>
+  );
+}
+
+export function MonthNav({
+  title,
+  onPrev,
+  onNext,
+  onToday,
+}: {
+  title: string;
+  onPrev: () => void;
+  onNext: () => void;
+  onToday: () => void;
+}) {
+  return (
+    <div className="mb-3 flex select-none items-center justify-between gap-2">
+      <button
+        type="button"
+        onClick={onPrev}
+        aria-label="الشهر السابق"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-navy-50 text-navy transition active:scale-95"
+      >
+        <Chevron dir="prev" />
+      </button>
+
+      <div className="flex flex-col items-center">
+        <div className="text-lg font-extrabold text-navy">{title}</div>
+        <button
+          type="button"
+          onClick={onToday}
+          className="mt-1 rounded-full bg-gold-soft px-4 py-1 text-xs font-bold text-gold transition active:scale-95"
+        >
+          اليوم
+        </button>
+      </div>
+
+      <button
+        type="button"
+        onClick={onNext}
+        aria-label="الشهر التالي"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-navy-50 text-navy transition active:scale-95"
+      >
+        <Chevron dir="next" />
+      </button>
+    </div>
+  );
+}

@@ -1,0 +1,83 @@
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { parseYMD } from '@/lib/dateUtils';
+import { useApp } from './AppStateProvider';
+import { useToday } from '@/hooks/useToday';
+import { ViewToggle } from './ViewToggle';
+import { MiniMonth } from './MiniMonth';
+
+export function YearView() {
+  const { state, hydrated } = useApp();
+  const today = useToday();
+  const [year, setYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (today && year === null) setYear(parseYMD(today).y);
+  }, [today, year]);
+
+  const itemDates = useMemo(() => new Set(state.items.map((i) => i.date)), [state.items]);
+
+  if (!hydrated || year === null) {
+    return <div className="h-[70dvh] animate-pulse rounded-xl2 bg-navy-50/60" />;
+  }
+
+  return (
+    <div>
+      <ViewToggle active="year" />
+
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => setYear((y) => (y ?? 0) - 1)}
+          aria-label="السنة السابقة"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy active:scale-95"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
+        </button>
+        <div className="flex flex-col items-center">
+          <div className="num text-xl font-extrabold text-navy">{year}</div>
+          {today && parseYMD(today).y !== year && (
+            <button
+              type="button"
+              onClick={() => setYear(parseYMD(today).y)}
+              className="mt-0.5 rounded-full bg-gold-soft px-3 py-0.5 text-xs font-bold text-gold"
+            >
+              السنة الحالية
+            </button>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => setYear((y) => (y ?? 0) + 1)}
+          aria-label="السنة التالية"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy active:scale-95"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+          <MiniMonth
+            key={m}
+            year={year}
+            month={m}
+            settings={state.settings}
+            todayISO={today}
+            dayNotes={state.dayNotes}
+            itemDates={itemDates}
+          />
+        ))}
+      </div>
+
+      <Link
+        href={{ pathname: '/print', query: { scope: 'year', y: year } }}
+        className="btn btn-gold mt-4 w-full"
+      >
+        🖨️ طباعة السنة كاملة ({year})
+      </Link>
+    </div>
+  );
+}

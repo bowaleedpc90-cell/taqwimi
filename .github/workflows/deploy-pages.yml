@@ -1,0 +1,60 @@
+name: Test & Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+# No workflow-level write: the build job (which runs PR-authored code) gets
+# read-only; only the deploy job is granted contents: write.
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Unit tests (calendar engine + Kuwait holidays)
+        run: node --test --import tsx lib/__tests__/engine.test.ts
+      - name: Static export build
+        run: npm run build
+      - name: Upload site artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: out
+
+  deploy:
+    # Production deploys only from main.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: out
+      # Pages serves the gh-pages branch ("deploy from a branch" mode).
+      # peaceiris writes a .nojekyll file so the Next.js _next/ folder is served.
+      - name: Publish to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: out

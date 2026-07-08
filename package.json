@@ -1,0 +1,31 @@
+{
+  "name": "taqwimi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "تقويمي — منصة رزنامة كويتية ذكية Mobile-first",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "node --test --import tsx lib/__tests__/*.test.ts"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "next": "15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "15.1.6",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
