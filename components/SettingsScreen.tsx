@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { defaultState } from '@/lib/storage';
 import { useApp } from './AppStateProvider';
 import { ToggleRow } from './ToggleRow';
+import { BrandFooter } from './BrandFooter';
 
 const WEEK_START_OPTIONS = [
   { value: 6, label: 'السبت' },
@@ -99,6 +100,8 @@ export function SettingsScreen() {
       <p className="mt-6 text-center text-xs text-muted">
         تقويمي — كل بياناتك محفوظة على جهازك فقط، بدون حساب أو خادم.
       </p>
+
+      <BrandFooter />
     </div>
   );
 }

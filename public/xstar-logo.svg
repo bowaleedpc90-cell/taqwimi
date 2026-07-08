@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="X Star Software">
+  <defs>
+    <linearGradient id="xsBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12161F"/>
+      <stop offset="1" stop-color="#080A10"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#xsBg)"/>
+  <!-- X: left arms white, right arms X-Star blue, split by a center seam -->
+  <g stroke-linecap="butt" stroke-width="54" fill="none">
+    <line x1="134" y1="150" x2="240" y2="266" stroke="#F4F7FC"/>
+    <line x1="238" y1="306" x2="132" y2="422" stroke="#F4F7FC"/>
+    <line x1="378" y1="150" x2="272" y2="266" stroke="#2176FF"/>
+    <line x1="274" y1="306" x2="380" y2="422" stroke="#2176FF"/>
+  </g>
+  <!-- sparkle star, top-right -->
+  <path d="M418 70 Q428 116 474 126 Q428 136 418 182 Q408 136 362 126 Q408 116 418 70 Z" fill="#2176FF"/>
+</svg>

@@ -14,6 +14,7 @@ import { GeneralNote } from './GeneralNote';
 import { DaySheet } from './DaySheet';
 import type { CellVM } from './DayCell';
 import { ViewToggle } from './ViewToggle';
+import { BrandFooter } from './BrandFooter';
 
 function visibleHoliday(h: Holiday | undefined, settings: Settings): Holiday | undefined {
   if (!h) return undefined;
@@ -118,6 +119,8 @@ export function CalendarShell() {
       )}
 
       <Legend />
+
+      <BrandFooter />
 
       {sheetDate && <DaySheet iso={sheetDate} onClose={() => setSheetDate(null)} />}
     </div>
