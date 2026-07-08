@@ -1,17 +1,18 @@
 import { CATEGORIES, HOLIDAY_TYPE_BG, HOLIDAY_TYPE_TEXT } from '@/lib/constants';
-import { pad2 } from '@/lib/dateUtils';
 import type { HolidayType } from '@/lib/types';
 import type { PrintDayVM, PrintMonthVM } from '@/lib/printTemplateEngine';
 import { EstimatedBadge } from './EstimatedBadge';
+import { MonthWatermark } from './MonthWatermark';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-// ألوان الطباعة مشتقّة من نفس مصدر الشاشة (تعالج M1/M2 وتمنع الانحراف مستقبلًا).
+// ألوان الطباعة مشتقّة من نفس مصدر الشاشة (تعالج M1/M2). الخلايا العادية شبه شفافة
+// لتظهر خلفية الشهر بنعومة مع بقاء الأرقام والعطل واضحة.
 function cellBg(vm: PrintDayVM): string {
-  if (!vm.inMonth) return 'bg-canvas/40';
+  if (!vm.inMonth) return 'bg-canvas/30';
   if (vm.holiday) return HOLIDAY_TYPE_BG[vm.holiday.type];
-  if (vm.isWeekend) return 'bg-weekend';
-  return 'bg-white';
+  if (vm.isWeekend) return 'bg-weekend/70';
+  return 'bg-white/60';
 }
 
 function chunk<T>(arr: T[], size: number): T[][] {
@@ -31,15 +32,7 @@ export function PrintMonth({ vm, showWatermark = true }: { vm: PrintMonthVM; sho
   const weeks = chunk(vm.cells, 7);
   return (
     <section className="print-page relative mb-6 flex min-h-[540px] flex-col overflow-hidden rounded-xl border border-line bg-white p-4 shadow-card print:mb-0 print:min-h-0 print:rounded-none print:border-0 print:shadow-none">
-      {showWatermark && (
-        <img
-          src={`${base}/monthly-art/${pad2(vm.month)}.svg`}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[54%] z-0 w-[68%] max-w-[440px] -translate-x-1/2 -translate-y-1/2"
-          style={{ opacity: 0.05 }}
-        />
-      )}
+      {showWatermark && <MonthWatermark month={vm.month} eager />}
 
       <div className="relative z-10 flex h-full flex-col">
         {/* الترويسة */}

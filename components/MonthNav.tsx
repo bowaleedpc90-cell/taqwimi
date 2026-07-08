@@ -12,11 +12,13 @@ function Chevron({ dir }: { dir: 'prev' | 'next' }) {
 
 export function MonthNav({
   title,
+  hijri,
   onPrev,
   onNext,
   onToday,
 }: {
   title: string;
+  hijri?: string;
   onPrev: () => void;
   onNext: () => void;
   onToday: () => void;
@@ -34,6 +36,7 @@ export function MonthNav({
 
       <div className="flex flex-col items-center">
         <div className="text-lg font-extrabold text-navy">{title}</div>
+        {hijri && <div className="mt-0.5 text-xs font-semibold text-religious">{hijri} هـ</div>}
         <button
           type="button"
           onClick={onToday}

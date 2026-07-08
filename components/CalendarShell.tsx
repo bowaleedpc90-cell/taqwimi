@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { buildMonthGrid } from '@/lib/calendarEngine';
 import { formatMonthTitle, monthKey, parseYMD, shiftMonth } from '@/lib/dateUtils';
+import { hijriMonthLabel } from '@/lib/hijriUtils';
 import { effectiveHolidayMap } from '@/lib/kuwaitHolidayService';
 import type { Holiday, Settings } from '@/lib/types';
 import { useApp } from './AppStateProvider';
@@ -107,11 +108,13 @@ export function CalendarShell() {
       <div {...swipe}>
         <MonthNav
           title={formatMonthTitle(ym.y, ym.m)}
+          hijri={hijriMonthLabel(ym.y, ym.m)}
           onPrev={() => setYm(shiftMonth(ym.y, ym.m, -1))}
           onNext={() => setYm(shiftMonth(ym.y, ym.m, 1))}
           onToday={() => today && setYm(parseYMD(today))}
         />
         <CalendarGrid
+          month={ym.m}
           weekdayLabels={view.grid.weekdayLabelsShort}
           cells={view.cells}
           weekendCols={view.weekendCols}
