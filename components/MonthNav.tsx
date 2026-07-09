@@ -29,13 +29,13 @@ export function MonthNav({
         type="button"
         onClick={onPrev}
         aria-label="الشهر السابق"
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-navy-50 text-navy transition active:scale-95"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-subtle text-heading transition active:scale-95"
       >
         <Chevron dir="prev" />
       </button>
 
       <div className="flex flex-col items-center">
-        <div className="text-lg font-extrabold text-navy">{title}</div>
+        <div className="text-lg font-extrabold text-heading">{title}</div>
         {hijri && <div className="mt-0.5 text-xs font-semibold text-religious">{hijri} هـ</div>}
         <button
           type="button"
@@ -50,7 +50,7 @@ export function MonthNav({
         type="button"
         onClick={onNext}
         aria-label="الشهر التالي"
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-navy-50 text-navy transition active:scale-95"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-subtle text-heading transition active:scale-95"
       >
         <Chevron dir="next" />
       </button>

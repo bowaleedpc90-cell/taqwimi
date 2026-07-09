@@ -18,6 +18,8 @@ export const AR_HIJRI_MONTHS = [
 // أسماء الأيام، الفهرس 0 = الأحد .. 6 = السبت
 export const AR_WEEKDAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 export const AR_WEEKDAYS_SHORT = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+// حرف واحد مميّز لكل يوم (عرض السنة) — لا تصادم بين الأحد والأربعاء. الفهرس 0 = الأحد
+export const AR_WEEKDAYS_LETTER = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'];
 
 export const CATEGORY_ORDER: Category[] = ['event', 'birthday', 'leave', 'work', 'other'];
 
@@ -45,13 +47,13 @@ export const HOLIDAY_TYPE_BG: Record<HolidayType, string> = {
   national: 'bg-national-soft',
   government: 'bg-gold-soft',
   religious: 'bg-religious-soft',
-  custom: 'bg-navy-50',
+  custom: 'bg-subtle', // قابل للقلب (فاتح نهارًا، تدرّج داكن ليلاً) — يبقى رقم اليوم واضحًا
 };
 export const HOLIDAY_TYPE_TEXT: Record<HolidayType, string> = {
   national: 'text-national',
   government: 'text-gold',
   religious: 'text-religious',
-  custom: 'text-navy',
+  custom: 'text-heading',
 };
 // خلفية + نص معًا (للشارات في الإدارة وورقة اليوم).
 export const HOLIDAY_TYPE_TINT: Record<HolidayType, string> = {

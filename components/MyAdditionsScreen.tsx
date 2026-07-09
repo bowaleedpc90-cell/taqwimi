@@ -37,13 +37,13 @@ export function MyAdditionsScreen() {
     [state.generalNotes],
   );
 
-  if (!hydrated) return <div className="h-[50dvh] animate-pulse rounded-xl2 bg-navy-50/60" />;
+  if (!hydrated) return <div className="h-[50dvh] animate-pulse rounded-xl2 bg-subtle/60" />;
 
   const empty = items.length === 0 && notes.length === 0 && generalNotes.length === 0;
 
   return (
     <div>
-      <h1 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-navy">
+      <h1 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-heading">
         <span aria-hidden>📋</span> إضافاتي
       </h1>
 
@@ -76,13 +76,13 @@ export function MyAdditionsScreen() {
                     {shortDate(it.date)} · {CATEGORIES[it.category].label}
                   </div>
                 </div>
-                <Link href={dayLink(it.date)} className="rounded-lg bg-navy-50 px-2.5 py-1.5 text-xs font-bold text-navy">
+                <Link href={dayLink(it.date)} className="rounded-lg bg-subtle px-2.5 py-1.5 text-xs font-bold text-heading">
                   افتح
                 </Link>
                 <button
                   type="button"
                   onClick={() => update((s) => ({ ...s, items: s.items.filter((x) => x.id !== it.id) }))}
-                  className="rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-600"
+                  className="rounded-lg bg-danger-soft px-2.5 py-1.5 text-xs font-bold text-danger"
                 >
                   حذف
                 </button>
@@ -103,7 +103,7 @@ export function MyAdditionsScreen() {
                   <div className="truncate text-sm text-ink">{text}</div>
                   <div className="text-xs text-muted">{shortDate(iso)}</div>
                 </div>
-                <Link href={dayLink(iso)} className="rounded-lg bg-navy-50 px-2.5 py-1.5 text-xs font-bold text-navy">
+                <Link href={dayLink(iso)} className="rounded-lg bg-subtle px-2.5 py-1.5 text-xs font-bold text-heading">
                   افتح
                 </Link>
                 <button
@@ -115,7 +115,7 @@ export function MyAdditionsScreen() {
                       return { ...s, dayNotes: next };
                     })
                   }
-                  className="rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-600"
+                  className="rounded-lg bg-danger-soft px-2.5 py-1.5 text-xs font-bold text-danger"
                 >
                   حذف
                 </button>
@@ -138,7 +138,7 @@ export function MyAdditionsScreen() {
                 </div>
                 <Link
                   href={{ pathname: '/', query: { y: Number(mk.split('-')[0]), m: Number(mk.split('-')[1]) } }}
-                  className="rounded-lg bg-navy-50 px-2.5 py-1.5 text-xs font-bold text-navy"
+                  className="rounded-lg bg-subtle px-2.5 py-1.5 text-xs font-bold text-heading"
                 >
                   افتح
                 </Link>

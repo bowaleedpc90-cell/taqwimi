@@ -1,18 +1,17 @@
 import type { Config } from 'tailwindcss';
 
+// لون مشتق من متغيّر CSS بقنوات RGB — يدعم شفافية Tailwind (مثل bg-surface/45).
+const v = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
+
 const config: Config = {
-  content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './hooks/**/*.{ts,tsx}',
-  ],
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './hooks/**/*.{ts,tsx}'],
   theme: {
     extend: {
       fontFamily: {
         sans: ['var(--font-cairo)', 'var(--font-tajawal)', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // هوية «تقويمي»: أزرق داكن + أبيض + ذهبي، والعطل الوطنية بالأخضر
+        // navy/gold ألوان علامة ثابتة (تعبئة بنص أبيض/داكن) — لا تتبدّل بين الوضعين
         navy: {
           DEFAULT: '#0B2A4A',
           50: '#eef3f9',
@@ -24,22 +23,20 @@ const config: Config = {
         gold: {
           DEFAULT: '#C9A227',
           light: '#E6C65B',
-          soft: '#f6edcf',
+          soft: v('gold-soft'),
         },
-        national: {
-          DEFAULT: '#15803D',
-          soft: '#e5f4ea',
-        },
-        religious: {
-          DEFAULT: '#B7791F',
-          soft: '#fbf1dd',
-        },
-        surface: '#FFFFFF',
-        canvas: '#F5F7FB',
-        line: '#E6E9F0',
-        muted: '#5B6472',
-        ink: '#1C2333',
-        weekend: '#eef1f6',
+        // ألوان قابلة للقلب حسب السمة (فاتح/داكن)
+        heading: v('heading'),
+        subtle: { DEFAULT: v('subtle'), hover: v('subtle-hover') },
+        surface: v('surface'),
+        canvas: v('canvas'),
+        line: v('line'),
+        muted: v('muted'),
+        ink: v('ink'),
+        weekend: v('weekend'),
+        national: { DEFAULT: v('national'), soft: v('national-soft') },
+        religious: { DEFAULT: v('religious'), soft: v('religious-soft') },
+        danger: { DEFAULT: v('danger'), soft: v('danger-soft'), 'soft-hover': v('danger-soft-hover') },
       },
       borderRadius: {
         xl2: '1.1rem',

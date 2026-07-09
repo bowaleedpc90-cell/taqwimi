@@ -51,7 +51,7 @@ export function HolidayFormSheet({
   return (
     <BottomSheet open={open} onClose={onClose} title={title} subtitle="الاسم والتاريخ والنوع">
       <div className="mb-4">
-        <label className="mb-1.5 block text-sm font-bold text-navy">الاسم</label>
+        <label className="mb-1.5 block text-sm font-bold text-heading">الاسم</label>
         <input
           className="field"
           value={nameAr}
@@ -62,7 +62,7 @@ export function HolidayFormSheet({
       </div>
 
       <div className="mb-4">
-        <label className="mb-1.5 block text-sm font-bold text-navy">التاريخ (ميلادي)</label>
+        <label className="mb-1.5 block text-sm font-bold text-heading">التاريخ (ميلادي)</label>
         <input
           type="date"
           className="field"
@@ -72,14 +72,14 @@ export function HolidayFormSheet({
           onChange={(e) => setDate(e.target.value)}
         />
         {yearLock !== undefined && !inYear && gregorianDate !== '' && (
-          <p className="mt-1.5 text-xs font-semibold text-red-600">
+          <p className="mt-1.5 text-xs font-semibold text-danger">
             تاريخ العطلة الرسمية لازم يكون ضمن سنة {yearLock}. لمناسبة في سنة أخرى استخدم «إضافة».
           </p>
         )}
       </div>
 
       <div className="mb-4">
-        <div className="mb-1.5 text-sm font-bold text-navy">النوع</div>
+        <div className="mb-1.5 text-sm font-bold text-heading">النوع</div>
         <div className="flex flex-wrap gap-2">
           {TYPE_ORDER.map((t) => (
             <button

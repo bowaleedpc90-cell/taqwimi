@@ -80,8 +80,8 @@ export function CalendarShell() {
   if (!hydrated || !ym || !view) {
     return (
       <div className="animate-pulse">
-        <div className="mx-auto mb-3 h-8 w-40 rounded-full bg-navy-50" />
-        <div className="h-[420px] rounded-xl2 bg-navy-50/60" />
+        <div className="mx-auto mb-3 h-8 w-40 rounded-full bg-subtle" />
+        <div className="h-[420px] rounded-xl2 bg-subtle/60" />
       </div>
     );
   }

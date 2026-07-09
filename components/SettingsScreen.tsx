@@ -4,15 +4,17 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { defaultState } from '@/lib/storage';
 import { useApp } from './AppStateProvider';
+import { useTheme } from './ThemeProvider';
 import { ToggleRow } from './ToggleRow';
 import { BrandFooter } from './BrandFooter';
 
 export function SettingsScreen() {
   const { state, hydrated, update } = useApp();
+  const { theme, toggle } = useTheme();
   const [confirmReset, setConfirmReset] = useState(false);
 
   if (!hydrated) {
-    return <div className="h-[50dvh] animate-pulse rounded-xl2 bg-navy-50/60" />;
+    return <div className="h-[50dvh] animate-pulse rounded-xl2 bg-subtle/60" />;
   }
 
   const s = state.settings;
@@ -20,9 +22,18 @@ export function SettingsScreen() {
 
   return (
     <div>
-      <h1 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-navy">
+      <h1 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-heading">
         <span aria-hidden>⚙️</span> الإعدادات
       </h1>
+
+      <section className="card mb-3 px-4 py-1">
+        <ToggleRow
+          label="الوضع الليلي"
+          description="مظهر داكن مريح للعين — يُحفظ على جهازك"
+          checked={theme === 'dark'}
+          onChange={() => toggle()}
+        />
+      </section>
 
       <section className="card mb-3 px-4 py-1 divide-y divide-line">
         <ToggleRow
@@ -46,9 +57,9 @@ export function SettingsScreen() {
       </section>
 
       <Link href="/holidays" className="card mb-3 flex items-center gap-3 p-4 transition active:scale-[0.99]">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy-50 text-lg" aria-hidden>📅</span>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-subtle text-lg" aria-hidden>📅</span>
         <span className="min-w-0 flex-1">
-          <span className="block font-bold text-navy">إدارة العطل والمناسبات</span>
+          <span className="block font-bold text-heading">إدارة العطل والمناسبات</span>
           <span className="mt-0.5 block text-xs text-muted">عدّل تواريخ العطل، احذفها، أو أضف مناسبات خاصة</span>
         </span>
         <span className="text-muted" aria-hidden>
@@ -57,7 +68,7 @@ export function SettingsScreen() {
       </Link>
 
       <section className="card p-4">
-        <div className="mb-1 font-bold text-red-600">تصفير البيانات</div>
+        <div className="mb-1 font-bold text-danger">تصفير البيانات</div>
         <p className="mb-3 text-xs text-muted">
           حذف كل الإضافات والنوتات والإعدادات من هذا الجهاز. لا يمكن التراجع.
         </p>

@@ -91,7 +91,7 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
 
       {/* نوت اليوم */}
       <div className="mb-5">
-        <label className="mb-1.5 block text-sm font-bold text-navy">نوتة داخل اليوم</label>
+        <label className="mb-1.5 block text-sm font-bold text-heading">نوتة داخل اليوم</label>
         <textarea
           className="field min-h-[72px] resize-y"
           value={note}
@@ -103,7 +103,7 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
       {/* الإضافات الحالية */}
       {dayItems.length > 0 && (
         <div className="mb-5">
-          <div className="mb-2 text-sm font-bold text-navy">إضافات هذا اليوم</div>
+          <div className="mb-2 text-sm font-bold text-heading">إضافات هذا اليوم</div>
           <ul className="flex flex-col gap-2">
             {dayItems.map((it) => (
               <li key={it.id} className="flex items-center gap-2 rounded-xl border border-line bg-canvas px-3 py-2">
@@ -118,14 +118,14 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
                 <button
                   type="button"
                   onClick={() => editItem(it)}
-                  className="rounded-lg bg-navy-50 px-2 py-1 text-xs font-bold text-navy"
+                  className="rounded-lg bg-subtle px-2 py-1 text-xs font-bold text-heading"
                 >
                   تعديل
                 </button>
                 <button
                   type="button"
                   onClick={() => deleteItem(it.id)}
-                  className="rounded-lg bg-red-50 px-2 py-1 text-xs font-bold text-red-600"
+                  className="rounded-lg bg-danger-soft px-2 py-1 text-xs font-bold text-danger"
                 >
                   حذف
                 </button>
@@ -137,7 +137,7 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
 
       {/* نموذج الإضافة/التعديل */}
       <div className="rounded-xl2 border border-line bg-canvas p-3">
-        <div className="mb-2 text-sm font-bold text-navy">{editingId ? 'تعديل الإضافة' : 'إضافة جديدة'}</div>
+        <div className="mb-2 text-sm font-bold text-heading">{editingId ? 'تعديل الإضافة' : 'إضافة جديدة'}</div>
 
         <input
           className="field mb-3"
@@ -176,7 +176,7 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
               type="button"
               onClick={() => setColor(null)}
               className={`flex h-8 items-center rounded-full border px-3 text-xs font-semibold ${
-                color === null ? 'border-navy bg-navy-50 text-navy' : 'border-line text-muted'
+                color === null ? 'border-heading bg-subtle text-heading' : 'border-line text-muted'
               }`}
             >
               حسب التصنيف
@@ -188,7 +188,7 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
                 aria-label={`لون ${c}`}
                 onClick={() => setColor(c)}
                 className={`h-8 w-8 rounded-full border-2 transition ${
-                  color === c ? 'border-navy ring-2 ring-navy/30' : 'border-white'
+                  color === c ? 'border-heading ring-2 ring-heading/40' : 'border-surface'
                 }`}
                 style={{ background: c }}
               />

@@ -9,7 +9,7 @@ export function GeneralNote({
 }) {
   return (
     <section className="card mt-3 p-3">
-      <label className="mb-1.5 flex items-center gap-2 text-sm font-bold text-navy">
+      <label className="mb-1.5 flex items-center gap-2 text-sm font-bold text-heading">
         <span aria-hidden>📌</span>
         ملاحظات عامة على الشهر
       </label>

@@ -12,7 +12,7 @@ function cellBg(vm: PrintDayVM): string {
   if (!vm.inMonth) return 'bg-canvas/30';
   if (vm.holiday) return HOLIDAY_TYPE_BG[vm.holiday.type];
   if (vm.isWeekend) return 'bg-weekend/70';
-  return 'bg-white/60';
+  return 'bg-surface/60';
 }
 
 function chunk<T>(arr: T[], size: number): T[][] {
@@ -31,14 +31,14 @@ const LEGEND: { type: HolidayType; label: string }[] = [
 export function PrintMonth({ vm, showWatermark = true }: { vm: PrintMonthVM; showWatermark?: boolean }) {
   const weeks = chunk(vm.cells, 7);
   return (
-    <section className="print-page relative mb-6 flex min-h-[540px] flex-col overflow-hidden rounded-xl border border-line bg-white p-4 shadow-card print:mb-0 print:min-h-0 print:rounded-none print:border-0 print:shadow-none">
+    <section className="print-page relative mb-6 flex min-h-[540px] flex-col overflow-hidden rounded-xl border border-line bg-surface p-4 shadow-card print:mb-0 print:min-h-0 print:rounded-none print:border-0 print:shadow-none">
       {showWatermark && <MonthWatermark month={vm.month} eager />}
 
       <div className="relative z-10 flex h-full flex-col">
         {/* الترويسة */}
         <header className="mb-3 flex items-end justify-between border-b-2 border-navy pb-2">
           <div>
-            <h2 className="text-2xl font-extrabold leading-none text-navy">{vm.title}</h2>
+            <h2 className="text-2xl font-extrabold leading-none text-heading">{vm.title}</h2>
             <div className="mt-1 text-sm font-semibold text-religious">{vm.hijriLabel} هـ</div>
           </div>
           <div className="flex items-center gap-1.5 text-base font-extrabold text-gold">
@@ -95,7 +95,7 @@ export function PrintMonth({ vm, showWatermark = true }: { vm: PrintMonthVM; sho
         {/* ملاحظات الشهر */}
         {vm.generalNote && (
           <div className="general-note mt-2 rounded-lg border border-line bg-canvas/70 p-2 text-[11px] leading-relaxed text-ink">
-            <span className="font-bold text-navy">ملاحظات: </span>
+            <span className="font-bold text-heading">ملاحظات: </span>
             {vm.generalNote}
           </div>
         )}
@@ -117,7 +117,7 @@ export function PrintMonth({ vm, showWatermark = true }: { vm: PrintMonthVM; sho
           <div className="flex shrink-0 items-center gap-2">
             <img src={`${base}/xstar-logo.svg`} alt="X Star Software" width={22} height={22} className="rounded" />
             <span className="flex flex-col leading-tight">
-              <span className="text-[10px] font-extrabold text-navy">X Star Software</span>
+              <span className="text-[10px] font-extrabold text-heading">X Star Software</span>
               <span className="text-[9px] font-semibold text-[#2176FF]">xstarkw.com</span>
             </span>
           </div>

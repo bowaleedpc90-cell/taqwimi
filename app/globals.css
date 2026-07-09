@@ -2,17 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================ السمة (فاتح/داكن) ============================
+   الألوان قنوات RGB ("R G B") كي تعمل شفافية Tailwind (مثل bg-surface/45).
+   الطباعة تبقى فاتحة دائمًا عبر فرض قيم فاتحة على .print-root تحت. */
 :root {
-  --navy: #0b2a4a;
-  --gold: #c9a227;
-  --national: #15803d;
-  --religious: #b7791f;
-  --canvas: #f5f7fb;
-  --surface: #ffffff;
-  --line: #e6e9f0;
-  --ink: #1c2333;
-  --muted: #5b6472;
+  color-scheme: light;
+  --surface: 255 255 255;
+  --canvas: 245 247 251;
+  --ink: 28 35 51;
+  --muted: 91 100 114;
+  --line: 230 233 240;
+  --weekend: 238 241 246;
+  --heading: 11 42 74;      /* عنوان/نص قوي (كان text-navy) */
+  --subtle: 238 243 249;    /* تدرّج فاتح (كان bg-navy-50) */
+  --subtle-hover: 214 226 240;
+  --national: 21 128 61;
+  --national-soft: 229 244 234;
+  --religious: 183 121 31;
+  --religious-soft: 251 241 221;
+  --gold-soft: 246 237 207;
+  --danger: 220 38 38;
+  --danger-soft: 254 242 242;
+  --danger-soft-hover: 254 226 226;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* قيم الوضع الليلي (اختيار صريح) */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --surface: 22 27 34;
+  --canvas: 13 17 23;
+  --ink: 230 237 243;
+  --muted: 149 158 172;
+  --line: 43 51 64;
+  --weekend: 24 31 43;
+  --heading: 208 224 245;
+  --subtle: 30 39 54;
+  --subtle-hover: 42 54 74;
+  --national: 52 199 111;
+  --national-soft: 21 45 32;
+  --religious: 214 165 95;
+  --religious-soft: 51 41 22;
+  --gold-soft: 51 43 20;
+  --danger: 248 113 113;
+  --danger-soft: 43 22 24;
+  --danger-soft-hover: 58 30 34;
+}
+
+/* الافتراضي أول مرة: احترام تفضيل النظام قبل تشغيل سكربت السمة (بلا وميض) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --surface: 22 27 34;
+    --canvas: 13 17 23;
+    --ink: 230 237 243;
+    --muted: 149 158 172;
+    --line: 43 51 64;
+    --weekend: 24 31 43;
+    --heading: 208 224 245;
+    --subtle: 30 39 54;
+    --subtle-hover: 42 54 74;
+    --national: 52 199 111;
+    --national-soft: 21 45 32;
+    --religious: 214 165 95;
+    --religious-soft: 51 41 22;
+    --gold-soft: 51 43 20;
+  }
 }
 
 * {
@@ -23,8 +78,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--canvas);
-  color: var(--ink);
+  background: rgb(var(--canvas));
+  color: rgb(var(--ink));
   overflow-x: hidden;
 }
 
@@ -40,6 +95,22 @@ body {
   direction: ltr;
   unicode-bidi: isolate;
   font-variant-numeric: tabular-nums;
+}
+
+/* خلفية الشهر المائية — خفيفة على الشاشة، أخفت وأنعم في الليلي، وثابتة للطباعة */
+.month-wm {
+  opacity: 0.1;
+  filter: saturate(0.8);
+}
+:root[data-theme='dark'] .month-wm {
+  opacity: 0.06;
+  filter: saturate(0.75) brightness(0.9);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .month-wm {
+    opacity: 0.06;
+    filter: saturate(0.75) brightness(0.9);
+  }
 }
 
 @keyframes sheetUp {
@@ -77,10 +148,10 @@ body {
     @apply bg-gold text-navy hover:bg-gold-light;
   }
   .btn-ghost {
-    @apply bg-navy-50 text-navy hover:bg-navy-100;
+    @apply bg-subtle text-heading hover:bg-subtle-hover;
   }
   .btn-danger {
-    @apply bg-red-50 text-red-600 hover:bg-red-100;
+    @apply bg-danger-soft text-danger hover:bg-danger-soft-hover;
   }
   .card {
     @apply rounded-xl2 bg-surface shadow-card;
@@ -90,12 +161,38 @@ body {
     min-height: 38px;
   }
   .field {
-    @apply w-full rounded-xl border border-line bg-canvas px-3 py-3 text-base outline-none focus:border-navy focus:ring-2 focus:ring-navy/15;
+    @apply w-full rounded-xl border border-line bg-canvas px-3 py-3 text-base outline-none focus:border-heading focus:ring-2 focus:ring-heading/30;
   }
 }
 
 /* ============================ الطباعة ============================ */
-/* حجم الصفحة واتجاهها يُحقنان ديناميكيًا من شاشة الطباعة (@page) حسب اختيار المستخدم. */
+/* حجم الصفحة واتجاهها يُحقنان ديناميكيًا من شاشة الطباعة (@page) حسب اختيار المستخدم.
+   الطباعة فاتحة دائمًا: نفرض قيم السمة الفاتحة على معاينة الطباعة بغضّ النظر عن سمة الشاشة. */
+.print-root {
+  color-scheme: light;
+  --surface: 255 255 255;
+  --canvas: 245 247 251;
+  --ink: 28 35 51;
+  --muted: 91 100 114;
+  --line: 230 233 240;
+  --weekend: 238 241 246;
+  --heading: 11 42 74;
+  --subtle: 238 243 249;
+  --subtle-hover: 214 226 240;
+  --national: 21 128 61;
+  --national-soft: 229 244 234;
+  --religious: 183 121 31;
+  --religious-soft: 251 241 221;
+  --gold-soft: 246 237 207;
+  --danger: 220 38 38;
+  --danger-soft: 254 242 242;
+  --danger-soft-hover: 254 226 226;
+}
+/* معاينة الطباعة تُظهر الخلفية بنفس شدّة الطباعة الفعلية (0.1) حتى في الوضع الليلي */
+.print-root .month-wm {
+  opacity: 0.1 !important;
+  filter: saturate(0.8) !important;
+}
 
 @media print {
   .no-print {
@@ -124,7 +221,12 @@ body {
   .print-root {
     display: block !important;
   }
-  /* شهر واحد لكل صفحة A4 */
+  /* خلفية الشهر: نفس المعالجة الفاتحة عند الطباعة مهما كانت سمة الشاشة */
+  .month-wm {
+    opacity: 0.1 !important;
+    filter: saturate(0.8) !important;
+  }
+  /* شهر واحد لكل صفحة */
   .print-page {
     break-inside: avoid;
     page-break-inside: avoid;

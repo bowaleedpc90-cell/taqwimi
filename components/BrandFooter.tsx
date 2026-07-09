@@ -18,7 +18,7 @@ export function BrandFooter({ className = '' }: { className?: string }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="X Star Software على إنستغرام"
-      className={`no-print mt-4 flex items-center gap-3 rounded-xl2 border border-line bg-surface px-4 py-3 shadow-card transition hover:border-navy/30 active:scale-[0.99] ${className}`}
+      className={`no-print mt-4 flex items-center gap-3 rounded-xl2 border border-line bg-surface px-4 py-3 shadow-card transition hover:border-heading/30 active:scale-[0.99] ${className}`}
     >
       <img
         src={`${base}/xstar-logo.svg`}
@@ -29,7 +29,7 @@ export function BrandFooter({ className = '' }: { className?: string }) {
       />
       <span className="flex min-w-0 flex-col leading-tight">
         <span className="text-[11px] text-muted">تطوير وبرمجة</span>
-        <span className="truncate text-sm font-extrabold text-navy">X Star Software</span>
+        <span className="truncate text-sm font-extrabold text-heading">X Star Software</span>
       </span>
       <span className="ms-auto inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2176FF]/10 text-[#2176FF]">
         <InstagramGlyph />

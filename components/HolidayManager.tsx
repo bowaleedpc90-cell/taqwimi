@@ -63,17 +63,17 @@ export function HolidayManager() {
     return out.sort((a, b) => a.effective.gregorianDate.localeCompare(b.effective.gregorianDate));
   }, [state.holidayOverrides, state.customHolidays, y]);
 
-  if (!hydrated) return <div className="h-[60dvh] animate-pulse rounded-xl2 bg-navy-50/60" />;
+  if (!hydrated) return <div className="h-[60dvh] animate-pulse rounded-xl2 bg-subtle/60" />;
 
   const defaultAddDate = today && parseYMD(today).y === y ? today : ymd(y, 1, 1);
 
   return (
     <div>
       <div className="mb-3 flex items-center gap-2">
-        <Link href="/settings" aria-label="رجوع" className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy">
+        <Link href="/settings" aria-label="رجوع" className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
         </Link>
-        <h1 className="flex items-center gap-2 text-xl font-extrabold text-navy">
+        <h1 className="flex items-center gap-2 text-xl font-extrabold text-heading">
           <span aria-hidden>📅</span> إدارة العطل والمناسبات
         </h1>
       </div>
@@ -84,11 +84,11 @@ export function HolidayManager() {
       </p>
 
       <div className="mb-3 flex items-center justify-between gap-2">
-        <button type="button" onClick={() => setYear(y - 1)} aria-label="السنة السابقة" className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy active:scale-95">
+        <button type="button" onClick={() => setYear(y - 1)} aria-label="السنة السابقة" className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
         </button>
-        <div className="num text-lg font-extrabold text-navy">{y}</div>
-        <button type="button" onClick={() => setYear(y + 1)} aria-label="السنة التالية" className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy active:scale-95">
+        <div className="num text-lg font-extrabold text-heading">{y}</div>
+        <button type="button" onClick={() => setYear(y + 1)} aria-label="السنة التالية" className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
         </button>
       </div>
@@ -113,7 +113,7 @@ export function HolidayManager() {
                 <span className={`truncate font-bold text-ink ${r.deleted ? 'line-through' : ''}`}>{r.effective.nameAr}</span>
                 {r.effective.isEstimated && !r.deleted && <EstimatedBadge />}
                 {r.edited && <span className="rounded bg-gold-soft px-1 text-[9px] font-bold text-gold">معدّلة</span>}
-                {r.deleted && <span className="rounded bg-red-50 px-1 text-[9px] font-bold text-red-600">محذوفة</span>}
+                {r.deleted && <span className="rounded bg-danger-soft px-1 text-[9px] font-bold text-danger">محذوفة</span>}
               </div>
               <div className="mt-0.5 flex items-center gap-2 text-xs text-muted">
                 <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${HOLIDAY_TYPE_TINT[r.effective.type]}`}>{HOLIDAY_TYPE_LABEL[r.effective.type]}</span>
@@ -127,7 +127,7 @@ export function HolidayManager() {
               </button>
             )}
             {r.deleted ? (
-              <button type="button" onClick={() => update((s) => restoreHoliday(s, y, r.slug!))} className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg bg-navy-50 px-3 text-xs font-bold text-navy">
+              <button type="button" onClick={() => update((s) => restoreHoliday(s, y, r.slug!))} className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg bg-subtle px-3 text-xs font-bold text-heading">
                 استعادة
               </button>
             ) : (
@@ -135,7 +135,7 @@ export function HolidayManager() {
                 type="button"
                 onClick={() => (r.kind === 'builtin' ? update((s) => deleteBuiltInHoliday(s, y, r.slug!)) : update((s) => deleteCustomHoliday(s, r.id!)))}
                 aria-label="حذف"
-                className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg bg-red-50 px-3 text-xs font-bold text-red-600"
+                className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg bg-danger-soft px-3 text-xs font-bold text-danger"
               >
                 حذف
               </button>
@@ -145,7 +145,7 @@ export function HolidayManager() {
       </ul>
 
       <section className="card mt-4 p-4">
-        <div className="mb-1 font-bold text-navy">استعادة العطل الرسمية</div>
+        <div className="mb-1 font-bold text-heading">استعادة العطل الرسمية</div>
         <p className="mb-3 text-xs text-muted">
           يرجّع كل العطل الرسمية لسنة {y} لتواريخها الافتراضية ويلغي تعديلاتك عليها. لا يمسّ المناسبات التي أضفتها بنفسك.
         </p>

@@ -18,7 +18,7 @@ function holidayTint(holiday?: Holiday, isWeekend?: boolean): string {
   // لتظهر خلفية الشهر المائية بنعومة خلفها مع بقاء الأرقام واضحة.
   if (holiday) return HOLIDAY_TYPE_BG[holiday.type];
   if (isWeekend) return 'bg-weekend/60';
-  return 'bg-white/45';
+  return 'bg-surface/45';
 }
 
 function holidayTextColor(holiday: Holiday): string {
@@ -65,7 +65,7 @@ export function DayCell({
       <div className="flex items-center justify-between">
         <span
           className={`num text-[15px] font-bold leading-none ${
-            cell.isToday ? 'text-navy' : holiday?.type === 'national' ? 'text-national' : 'text-ink'
+            cell.isToday ? 'text-heading' : holiday?.type === 'national' ? 'text-national' : 'text-ink'
           }`}
         >
           {cell.day}

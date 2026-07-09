@@ -1,4 +1,4 @@
-import { AR_WEEKDAYS, AR_WEEKDAYS_SHORT } from './constants';
+import { AR_WEEKDAYS, AR_WEEKDAYS_LETTER, AR_WEEKDAYS_SHORT } from './constants';
 import { dayOfWeek, daysInMonth, ymd } from './dateUtils';
 
 export interface DayCellModel {
@@ -16,6 +16,7 @@ export interface MonthGrid {
   weekStart: number;         // 0..6
   weekdayLabels: string[];   // 7، الفهرس 0 = weekStart
   weekdayLabelsShort: string[];
+  weekdayLetters: string[];  // 7، حرف واحد مميّز (لعرض السنة)
   cells: DayCellModel[];     // دائمًا 42 (6×7)
   weeks: DayCellModel[][];   // 6 صفوف × 7
 }
@@ -28,6 +29,13 @@ export function getWeekdayLabels(weekStart: number, short = false): string[] {
   const src = short ? AR_WEEKDAYS_SHORT : AR_WEEKDAYS;
   const out: string[] = [];
   for (let i = 0; i < 7; i++) out.push(src[(weekStart + i) % 7]);
+  return out;
+}
+
+/** حرف واحد مميّز لكل يوم، مُدوَّر ليبدأ من weekStart (لعرض السنة). */
+export function getWeekdayLetters(weekStart: number): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < 7; i++) out.push(AR_WEEKDAYS_LETTER[(weekStart + i) % 7]);
   return out;
 }
 
@@ -79,6 +87,7 @@ export function buildMonthGrid(opts: BuildMonthGridOpts): MonthGrid {
     weekStart,
     weekdayLabels: getWeekdayLabels(weekStart, false),
     weekdayLabelsShort: getWeekdayLabels(weekStart, true),
+    weekdayLetters: getWeekdayLetters(weekStart),
     cells,
     weeks,
   };

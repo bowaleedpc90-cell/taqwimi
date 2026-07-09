@@ -24,7 +24,7 @@ function SegButton({ active, onClick, children }: { active: boolean; onClick: ()
     <button
       type="button"
       onClick={onClick}
-      className={`flex-1 rounded-full px-3 py-2 text-sm font-bold transition ${active ? 'bg-surface text-navy shadow-sm' : 'text-muted'}`}
+      className={`flex-1 rounded-full px-3 py-2 text-sm font-bold transition ${active ? 'bg-surface text-heading shadow-sm' : 'text-muted'}`}
     >
       {children}
     </button>
@@ -70,7 +70,7 @@ export function PrintPreview() {
   );
 
   if (!hydrated || !ym) {
-    return <div className="h-[60dvh] animate-pulse rounded-xl2 bg-navy-50/60" />;
+    return <div className="h-[60dvh] animate-pulse rounded-xl2 bg-subtle/60" />;
   }
 
   return (
@@ -80,11 +80,11 @@ export function PrintPreview() {
 
       {/* أدوات التحكم — لا تُطبع */}
       <div className="no-print mb-4">
-        <h1 className="mb-3 flex items-center gap-2 text-xl font-extrabold text-navy">
+        <h1 className="mb-3 flex items-center gap-2 text-xl font-extrabold text-heading">
           <span aria-hidden>🖨️</span> إعدادات الطباعة
         </h1>
 
-        <div className="mb-3 inline-flex w-full rounded-full bg-navy-50 p-1">
+        <div className="mb-3 inline-flex w-full rounded-full bg-subtle p-1">
           <SegButton active={scope === 'month'} onClick={() => setScope('month')}>الشهر المختار</SegButton>
           <SegButton active={scope === 'year'} onClick={() => setScope('year')}>السنة كاملة (١٢ صفحة)</SegButton>
         </div>
@@ -94,18 +94,18 @@ export function PrintPreview() {
           <button
             type="button"
             onClick={() => setYm((p) => (p ? (scope === 'year' ? { ...p, y: p.y - 1 } : shiftMonth(p.y, p.m, -1)) : p))}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading"
             aria-label="السابق"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
           </button>
-          <div className="num text-lg font-extrabold text-navy">
+          <div className="num text-lg font-extrabold text-heading">
             {scope === 'year' ? ym.y : `${AR_MONTHS[ym.m - 1]} ${ym.y}`}
           </div>
           <button
             type="button"
             onClick={() => setYm((p) => (p ? (scope === 'year' ? { ...p, y: p.y + 1 } : shiftMonth(p.y, p.m, 1)) : p))}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading"
             aria-label="التالي"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
@@ -116,14 +116,14 @@ export function PrintPreview() {
         <div className="mb-3 grid grid-cols-2 gap-2">
           <div>
             <div className="mb-1 text-xs font-bold text-muted">حجم الورق</div>
-            <div className="inline-flex w-full rounded-full bg-navy-50 p-1">
+            <div className="inline-flex w-full rounded-full bg-subtle p-1">
               <SegButton active={paper === 'A4'} onClick={() => setPaper('A4')}>A4</SegButton>
               <SegButton active={paper === 'A3'} onClick={() => setPaper('A3')}>A3</SegButton>
             </div>
           </div>
           <div>
             <div className="mb-1 text-xs font-bold text-muted">الاتجاه</div>
-            <div className="inline-flex w-full rounded-full bg-navy-50 p-1">
+            <div className="inline-flex w-full rounded-full bg-subtle p-1">
               <SegButton active={orientation === 'portrait'} onClick={() => setOrientation('portrait')}>عمودي</SegButton>
               <SegButton active={orientation === 'landscape'} onClick={() => setOrientation('landscape')}>أفقي</SegButton>
             </div>

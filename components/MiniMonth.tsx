@@ -9,7 +9,7 @@ function tint(h: Holiday | undefined, isWeekend: boolean, settings: Settings): s
   if (h) {
     const visible = h.type === 'custom' || (h.isEstimated ? settings.showReligious : settings.showHolidays);
     if (visible) {
-      if (h.type === 'national') return 'bg-national text-white';
+      if (h.type === 'national') return 'bg-national-soft text-national';
       if (h.type === 'government') return 'bg-gold text-navy';
       if (h.type === 'custom') return 'bg-navy text-white';
       return 'bg-religious-soft text-religious';
@@ -52,11 +52,11 @@ export function MiniMonth({
       href={{ pathname: '/', query: { y: year, m: month } }}
       className="card block p-2 transition active:scale-[0.98]"
     >
-      <div className="mb-1 text-center text-sm font-extrabold text-navy">{AR_MONTHS[month - 1]}</div>
+      <div className="mb-1 text-center text-sm font-extrabold text-heading">{AR_MONTHS[month - 1]}</div>
       <div className="grid grid-cols-7 gap-px">
-        {grid.weekdayLabelsShort.map((l, i) => (
+        {grid.weekdayLetters.map((letter, i) => (
           <div key={i} className={`text-center text-[8px] font-bold ${weekendCols[i] ? 'text-national' : 'text-muted'}`}>
-            {l.slice(0, 1)}
+            {letter}
           </div>
         ))}
         {grid.cells.map((cell, i) => {

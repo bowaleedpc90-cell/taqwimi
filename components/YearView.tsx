@@ -26,7 +26,7 @@ export function YearView() {
   );
 
   if (!hydrated || year === null) {
-    return <div className="h-[70dvh] animate-pulse rounded-xl2 bg-navy-50/60" />;
+    return <div className="h-[70dvh] animate-pulse rounded-xl2 bg-subtle/60" />;
   }
 
   return (
@@ -38,12 +38,12 @@ export function YearView() {
           type="button"
           onClick={() => setYear((y) => (y ?? 0) - 1)}
           aria-label="السنة السابقة"
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy active:scale-95"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
         </button>
         <div className="flex flex-col items-center">
-          <div className="num text-xl font-extrabold text-navy">{year}</div>
+          <div className="num text-xl font-extrabold text-heading">{year}</div>
           {today && parseYMD(today).y !== year && (
             <button
               type="button"
@@ -58,7 +58,7 @@ export function YearView() {
           type="button"
           onClick={() => setYear((y) => (y ?? 0) + 1)}
           aria-label="السنة التالية"
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-50 text-navy active:scale-95"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
         </button>
