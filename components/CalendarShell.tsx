@@ -114,7 +114,6 @@ export function CalendarShell() {
           onToday={() => today && setYm(parseYMD(today))}
         />
         <CalendarGrid
-          month={ym.m}
           weekdayLabels={view.grid.weekdayLabelsShort}
           cells={view.cells}
           weekendCols={view.weekendCols}

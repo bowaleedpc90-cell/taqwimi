@@ -2,17 +2,15 @@ import { CATEGORIES, HOLIDAY_TYPE_BG, HOLIDAY_TYPE_TEXT } from '@/lib/constants'
 import type { HolidayType } from '@/lib/types';
 import type { PrintDayVM, PrintMonthVM } from '@/lib/printTemplateEngine';
 import { EstimatedBadge } from './EstimatedBadge';
-import { MonthWatermark } from './MonthWatermark';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-// ألوان الطباعة مشتقّة من نفس مصدر الشاشة (تعالج M1/M2). الخلايا العادية شبه شفافة
-// لتظهر خلفية الشهر بنعومة مع بقاء الأرقام والعطل واضحة.
+// ألوان الطباعة مشتقّة من نفس مصدر الشاشة (تعالج M1/M2).
 function cellBg(vm: PrintDayVM): string {
-  if (!vm.inMonth) return 'bg-canvas/30';
+  if (!vm.inMonth) return 'bg-canvas';
   if (vm.holiday) return HOLIDAY_TYPE_BG[vm.holiday.type];
-  if (vm.isWeekend) return 'bg-weekend/70';
-  return 'bg-surface/60';
+  if (vm.isWeekend) return 'bg-weekend';
+  return 'bg-surface';
 }
 
 function chunk<T>(arr: T[], size: number): T[][] {
@@ -28,13 +26,11 @@ const LEGEND: { type: HolidayType; label: string }[] = [
   { type: 'custom', label: 'خاصة' },
 ];
 
-export function PrintMonth({ vm, showWatermark = true }: { vm: PrintMonthVM; showWatermark?: boolean }) {
+export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
   const weeks = chunk(vm.cells, 7);
   return (
-    <section className="print-page relative mb-6 flex min-h-[540px] flex-col overflow-hidden rounded-xl border border-line bg-surface p-4 shadow-card print:mb-0 print:min-h-0 print:rounded-none print:border-0 print:shadow-none">
-      {showWatermark && <MonthWatermark month={vm.month} eager />}
-
-      <div className="relative z-10 flex h-full flex-col">
+    <section className="print-page mb-6 flex min-h-[540px] flex-col overflow-hidden rounded-xl border border-line bg-surface p-4 shadow-card print:mb-0 print:min-h-0 print:rounded-none print:border-0 print:shadow-none">
+      <div className="flex h-full flex-col">
         {/* الترويسة */}
         <header className="mb-3 flex items-end justify-between border-b-2 border-navy pb-2">
           <div>

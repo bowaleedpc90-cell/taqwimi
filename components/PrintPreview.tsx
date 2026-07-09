@@ -37,7 +37,6 @@ export function PrintPreview() {
   const [scope, setScope] = useState<Scope>('month');
   const [paper, setPaper] = useState<Paper>('A4');
   const [orientation, setOrientation] = useState<Orientation>('portrait');
-  const [watermark, setWatermark] = useState(true);
   const [ym, setYm] = useState<{ y: number; m: number } | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -130,35 +129,18 @@ export function PrintPreview() {
           </div>
         </div>
 
-        {/* الخلفية المائية */}
-        <button
-          type="button"
-          role="switch"
-          aria-checked={watermark}
-          onClick={() => setWatermark((v) => !v)}
-          className="mb-3 flex w-full items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 text-start"
-        >
-          <span className="min-w-0">
-            <span className="block font-semibold text-ink">زخرفة الشهر (خلفية مائية)</span>
-            <span className="mt-0.5 block text-xs text-muted">رسمة كويتية خفيفة خلف الرزنامة لكل شهر</span>
-          </span>
-          <span className={`relative h-7 w-12 shrink-0 rounded-full transition ${watermark ? 'bg-national' : 'bg-line'}`}>
-            <span className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-all ${watermark ? 'start-[22px]' : 'start-0.5'}`} />
-          </span>
-        </button>
-
         <button type="button" onClick={() => window.print()} className="btn btn-primary w-full">
           🖨️ طباعة الآن
         </button>
         <p className="mt-2 text-center text-xs text-muted">
-          فعّل «طباعة الخلفيات/الألوان» (Background graphics) في نافذة الطباعة لظهور الألوان والزخرفة.
+          فعّل «طباعة الخلفيات/الألوان» (Background graphics) في نافذة الطباعة لظهور ألوان العطل.
         </p>
       </div>
 
       {/* المحتوى المطبوع */}
       <div className="print-root mx-auto max-w-[520px]">
         {pages.map((vm) => (
-          <PrintMonth key={`${vm.year}-${vm.month}`} vm={vm} showWatermark={watermark} />
+          <PrintMonth key={`${vm.year}-${vm.month}`} vm={vm} />
         ))}
       </div>
     </div>

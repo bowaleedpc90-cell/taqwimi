@@ -14,11 +14,9 @@ export interface CellVM {
 }
 
 function holidayTint(holiday?: Holiday, isWeekend?: boolean): string {
-  // خلايا العطل مُعتِمة عمدًا كي يبقى نصّها واضحًا؛ العادية/نهاية الأسبوع شبه شفافة
-  // لتظهر خلفية الشهر المائية بنعومة خلفها مع بقاء الأرقام واضحة.
   if (holiday) return HOLIDAY_TYPE_BG[holiday.type];
-  if (isWeekend) return 'bg-weekend/60';
-  return 'bg-surface/45';
+  if (isWeekend) return 'bg-weekend';
+  return 'bg-surface';
 }
 
 function holidayTextColor(holiday: Holiday): string {

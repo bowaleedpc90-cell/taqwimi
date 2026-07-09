@@ -97,22 +97,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* خلفية الشهر المائية — خفيفة على الشاشة، أخفت وأنعم في الليلي، وثابتة للطباعة */
-.month-wm {
-  opacity: 0.1;
-  filter: saturate(0.8);
-}
-:root[data-theme='dark'] .month-wm {
-  opacity: 0.06;
-  filter: saturate(0.75) brightness(0.9);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .month-wm {
-    opacity: 0.06;
-    filter: saturate(0.75) brightness(0.9);
-  }
-}
-
 @keyframes sheetUp {
   from {
     transform: translateY(100%);
@@ -188,11 +172,6 @@ body {
   --danger-soft: 254 242 242;
   --danger-soft-hover: 254 226 226;
 }
-/* معاينة الطباعة تُظهر الخلفية بنفس شدّة الطباعة الفعلية (0.1) حتى في الوضع الليلي */
-.print-root .month-wm {
-  opacity: 0.1 !important;
-  filter: saturate(0.8) !important;
-}
 
 @media print {
   .no-print {
@@ -220,11 +199,6 @@ body {
   }
   .print-root {
     display: block !important;
-  }
-  /* خلفية الشهر: نفس المعالجة الفاتحة عند الطباعة مهما كانت سمة الشاشة */
-  .month-wm {
-    opacity: 0.1 !important;
-    filter: saturate(0.8) !important;
   }
   /* شهر واحد لكل صفحة */
   .print-page {
