@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 
-// «تقويمي» يُنشر على GitHub Pages من مستودعه الخاص، فيُخدَم تحت مسار اسم المستودع
-// (‎/taqwimi‎). يمكن تجاوزه عبر NEXT_PUBLIC_BASE_PATH (مثلاً "" للتشغيل المحلي على الجذر).
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/taqwimi';
+// «تقويمي» يُخدَم من جذر الدومين المخصّص taqwimi.xstarkw.com، فالمسار الأساسي فارغ ''.
+// يمكن تجاوزه عبر NEXT_PUBLIC_BASE_PATH (مثلاً "/taqwimi" للنشر تحت مسار المستودع على github.io).
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 const nextConfig = {
   reactStrictMode: true,

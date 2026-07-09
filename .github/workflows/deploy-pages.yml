@@ -53,8 +53,11 @@ jobs:
           path: out
       # Pages serves the gh-pages branch ("deploy from a branch" mode).
       # peaceiris writes a .nojekyll file so the Next.js _next/ folder is served.
+      # cname: يضمن بقاء الدومين المخصّص في gh-pages مع كل نشر ولا يُحذف أبدًا
+      # (إضافةً إلى public/CNAME الذي يُنسخ تلقائيًا إلى out/CNAME).
       - name: Publish to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: out
+          cname: taqwimi.xstarkw.com
