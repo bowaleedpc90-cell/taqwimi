@@ -12,6 +12,7 @@ import { useSwipe } from '@/hooks/useSwipe';
 import { MonthNav } from './MonthNav';
 import { CalendarGrid } from './CalendarGrid';
 import { GeneralNote } from './GeneralNote';
+import { Track180Card } from './Track180Card';
 import { DaySheet } from './DaySheet';
 import type { CellVM } from './DayCell';
 import { ViewToggle } from './ViewToggle';
@@ -68,6 +69,12 @@ export function CalendarShell() {
       holiday: cell.iso ? visibleHoliday(hmap.get(cell.iso), state.settings) : undefined,
       items: cell.iso ? itemsByDate[cell.iso] ?? [] : [],
       hasNote: !!(cell.iso && state.settings.showNotes && state.dayNotes[cell.iso]),
+      // نقطة الإجازة تتبع نفس تعريف يوم العمل في computeTrack180 (راحة/عطلة فعّالة = لا نقطة)
+      // كي لا تبقى نقطة عالقة على يوم صار غير محسوب بعد تعديل العطل/نهاية الأسبوع.
+      track180:
+        cell.iso && state.settings.track180 && !cell.isWeekend && !hmap.has(cell.iso)
+          ? state.track180Days[cell.iso]
+          : undefined,
     }));
 
     const weekendCols = grid.weekdayLabels.map((_, i) =>
@@ -136,7 +143,9 @@ export function CalendarShell() {
         />
       )}
 
-      <Legend />
+      {state.settings.track180 && today && <Track180Card today={today} />}
+
+      <Legend track180={state.settings.track180} />
 
       <BrandFooter />
 
@@ -147,17 +156,19 @@ export function CalendarShell() {
   );
 }
 
-function Legend() {
-  const items = [
+function Legend({ track180 }: { track180: boolean }) {
+  // np: عنصر يظهر على الشاشة فقط ولا يُطبع (نقطة إجازة تتبع ١٨٠)
+  const items: { c: string; l: string; np?: boolean }[] = [
     { c: 'bg-national', l: 'عطلة وطنية' },
     { c: 'bg-religious', l: 'مناسبة دينية' },
     { c: 'bg-weekend border border-line', l: 'نهاية الأسبوع' },
     { c: 'bg-gold', l: 'يوجد نوتة' },
+    ...(track180 ? [{ c: 'bg-danger', l: 'إجازة (تتبع ١٨٠)', np: true }] : []),
   ];
   return (
     <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1.5 px-2 text-xs text-muted">
       {items.map((it) => (
-        <span key={it.l} className="inline-flex items-center gap-1.5">
+        <span key={it.l} className={`inline-flex items-center gap-1.5 ${it.np ? 'no-print' : ''}`}>
           <span className={`h-3 w-3 rounded-full ${it.c}`} />
           {it.l}
         </span>

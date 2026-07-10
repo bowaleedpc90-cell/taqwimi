@@ -7,6 +7,7 @@ export const DEFAULT_SETTINGS: Settings = {
   showHolidays: true,
   showReligious: true,
   showNotes: true,
+  track180: false,       // تتبع ١٨٠ يوم — مطفأ حتى يفعّله المستخدم
 };
 
 export function defaultState(): AppState {
@@ -18,6 +19,7 @@ export function defaultState(): AppState {
     generalNotes: {},
     customHolidays: [],
     holidayOverrides: {},
+    track180Days: {},
   };
 }
 
@@ -38,6 +40,7 @@ export function loadState(): AppState {
       customHolidays: Array.isArray(p.customHolidays) ? p.customHolidays : [],
       holidayOverrides:
         p.holidayOverrides && typeof p.holidayOverrides === 'object' ? p.holidayOverrides : {},
+      track180Days: p.track180Days && typeof p.track180Days === 'object' ? p.track180Days : {},
     };
   } catch {
     return d;

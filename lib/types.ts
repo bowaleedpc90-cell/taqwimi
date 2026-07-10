@@ -46,7 +46,14 @@ export interface Settings {
   showHolidays: boolean;  // العطل الرسمية (وطنية/حكومية)
   showReligious: boolean; // المناسبات الدينية (تقديرية)
   showNotes: boolean;     // النوتات + النقاط + النوت العام
+  track180: boolean;      // تتبع ١٨٠ يوم (الأعمال الممتازة) — الافتراضي مطفأ
 }
+
+/**
+ * حالة يوم في «تتبع ١٨٠ يوم» — كلها إجازات تُخصم من العدّاد.
+ * اليوم بلا حالة مسجّلة = دوام محسوب تلقائيًا (النموذج خصمي، لا تسجيل حضور).
+ */
+export type Track180LeaveType = 'annual' | 'sick' | 'emergency' | 'other';
 
 export interface AppState {
   version: 2;
@@ -56,4 +63,5 @@ export interface AppState {
   generalNotes: Record<string, string>;          // "YYYY-MM" -> نص النوت العام
   customHolidays: Holiday[];                     // عطل/مناسبات أضافها المستخدم
   holidayOverrides: Record<string, HolidayOverride>; // "YYYY-slug" -> تعديل على عطلة رسمية
+  track180Days: Record<string, Track180LeaveType>;   // iso -> إجازة مسجّلة (يوم بلا مفتاح = دوام)
 }

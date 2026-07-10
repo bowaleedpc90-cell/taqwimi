@@ -10,5 +10,8 @@
 next-env.d.ts
 .DS_Store
 
+# أدوات محلية
+/.claude/
+
 # env
 .env*.local

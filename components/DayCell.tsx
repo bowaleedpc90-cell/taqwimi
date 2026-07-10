@@ -2,7 +2,8 @@
 
 import { CATEGORIES, HOLIDAY_TYPE_BG, HOLIDAY_TYPE_TEXT } from '@/lib/constants';
 import type { DayCellModel } from '@/lib/calendarEngine';
-import type { DayItem, Holiday } from '@/lib/types';
+import { TRACK180_LEAVE_TYPES } from '@/lib/track180';
+import type { DayItem, Holiday, Track180LeaveType } from '@/lib/types';
 import { useLongPress } from '@/hooks/useLongPress';
 import { EstimatedBadge } from './EstimatedBadge';
 
@@ -11,6 +12,7 @@ export interface CellVM {
   holiday?: Holiday;
   items: DayItem[];
   hasNote: boolean;
+  track180?: Track180LeaveType; // إجازة مسجّلة في «تتبع ١٨٠ يوم» (شاشة فقط — لا تُطبع)
 }
 
 function holidayTint(holiday?: Holiday, isWeekend?: boolean): string {
@@ -32,7 +34,7 @@ export function DayCell({
   onSelect: (iso: string) => void;
   onLongPress?: (iso: string) => void;
 }) {
-  const { cell, holiday, items, hasNote } = vm;
+  const { cell, holiday, items, hasNote, track180 } = vm;
   const { longFired, handlers } = useLongPress(() => cell.iso && onLongPress?.(cell.iso));
 
   if (!cell.inMonth || !cell.iso) {
@@ -68,7 +70,15 @@ export function DayCell({
         >
           {cell.day}
         </span>
-        {hasNote && <span className="h-2 w-2 rounded-full bg-gold" aria-label="نوت" />}
+        <span className="flex items-center gap-0.5">
+          {track180 && (
+            <span
+              className="no-print h-2 w-2 rounded-full bg-danger"
+              aria-label={`إجازة ${TRACK180_LEAVE_TYPES[track180]?.label ?? ''} — تتبع ١٨٠`}
+            />
+          )}
+          {hasNote && <span className="h-2 w-2 rounded-full bg-gold" aria-label="نوت" />}
+        </span>
       </div>
 
       {holiday && (

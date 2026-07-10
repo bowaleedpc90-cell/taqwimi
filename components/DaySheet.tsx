@@ -5,7 +5,8 @@ import { CATEGORIES, CATEGORY_ORDER, COLOR_SWATCHES, AR_MONTHS, AR_WEEKDAYS, HOL
 import { dayOfWeek, parseYMD } from '@/lib/dateUtils';
 import { getEffectiveHolidayForDate } from '@/lib/kuwaitHolidayService';
 import { uid } from '@/lib/storage';
-import type { Category, DayItem } from '@/lib/types';
+import { isTrack180Workday, TRACK180_LEAVE_ORDER, TRACK180_LEAVE_TYPES } from '@/lib/track180';
+import type { Category, DayItem, Track180LeaveType } from '@/lib/types';
 import { useApp } from './AppStateProvider';
 import { BottomSheet } from './BottomSheet';
 import { EstimatedBadge } from './EstimatedBadge';
@@ -21,6 +22,10 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
   const holiday = useMemo(() => getEffectiveHolidayForDate(iso, state), [iso, state]);
   const dayItems = useMemo(() => state.items.filter((i) => i.date === iso), [state.items, iso]);
   const note = state.dayNotes[iso] ?? '';
+
+  // «تتبع ١٨٠ يوم»: حالة اليوم + هل هو يوم عمل يدخل في الحسبة (مصدر واحد: lib/track180)
+  const dayStatus = state.track180Days[iso];
+  const isWorkday = useMemo(() => isTrack180Workday(iso, state), [iso, state]);
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Category>('event');
@@ -40,6 +45,15 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
       if (text.trim() === '') delete next[iso];
       else next[iso] = text;
       return { ...s, dayNotes: next };
+    });
+  }
+
+  function setDayStatus(type: Track180LeaveType | null) {
+    update((s) => {
+      const next = { ...s.track180Days };
+      if (type === null) delete next[iso];
+      else next[iso] = type;
+      return { ...s, track180Days: next };
     });
   }
 
@@ -99,6 +113,59 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
           placeholder="تظهر داخل خانة اليوم وتُطبع معه…"
         />
       </div>
+
+      {/* حالة الدوام — تتبع ١٨٠ يوم */}
+      {state.settings.track180 && (
+        <div className="mb-5">
+          <div className="mb-1.5 flex items-center gap-2 text-sm font-bold text-heading">
+            <span aria-hidden>🎯</span>
+            حالة الدوام
+            <span className="text-xs font-semibold text-muted">تتبع ١٨٠ يوم</span>
+          </div>
+          {isWorkday ? (
+            <>
+              <div role="group" aria-label="حالة الدوام" className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDayStatus(null)}
+                  aria-pressed={dayStatus === undefined}
+                  className={`chip ${dayStatus === undefined ? 'border-navy bg-navy text-white' : 'text-ink'}`}
+                >
+                  <span aria-hidden>💼</span>
+                  دوام
+                </button>
+                {TRACK180_LEAVE_ORDER.map((t) => {
+                  const active = dayStatus === t;
+                  return (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setDayStatus(active ? null : t)}
+                      aria-pressed={active}
+                      className={`chip ${active ? 'border-navy bg-navy text-white' : 'text-ink'}`}
+                    >
+                      <span aria-hidden>{TRACK180_LEAVE_TYPES[t].emoji}</span>
+                      {TRACK180_LEAVE_TYPES[t].label}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-1.5 text-[11px] text-muted">
+                اليوم بلا حالة يُحسب دوامًا تلقائيًا — حدّد نوع الإجازة فقط عند الغياب.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-xs text-muted">يوم راحة أو عطلة رسمية — لا يدخل في حسبة الدوام.</p>
+              {dayStatus !== undefined && (
+                <button type="button" onClick={() => setDayStatus(null)} className="btn btn-ghost mt-2 w-full text-sm">
+                  إزالة الحالة المسجّلة سابقًا ({TRACK180_LEAVE_TYPES[dayStatus]?.label ?? 'إجازة'})
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* الإضافات الحالية */}
       {dayItems.length > 0 && (

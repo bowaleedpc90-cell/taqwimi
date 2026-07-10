@@ -54,6 +54,12 @@ export function SettingsScreen() {
           checked={s.showNotes}
           onChange={(v) => set({ showNotes: v })}
         />
+        <ToggleRow
+          label="تتبع ١٨٠ يوم"
+          description="تتبع أيام دوامك لاستحقاق الأعمال الممتازة — لموظفي الجهات الحكومية"
+          checked={s.track180}
+          onChange={(v) => set({ track180: v })}
+        />
       </section>
 
       <Link href="/holidays" className="card mb-3 flex items-center gap-3 p-4 transition active:scale-[0.99]">
