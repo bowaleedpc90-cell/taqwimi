@@ -49,26 +49,8 @@
   --danger-soft-hover: 58 30 34;
 }
 
-/* الافتراضي أول مرة: احترام تفضيل النظام قبل تشغيل سكربت السمة (بلا وميض) */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-    --surface: 22 27 34;
-    --canvas: 13 17 23;
-    --ink: 230 237 243;
-    --muted: 149 158 172;
-    --line: 43 51 64;
-    --weekend: 24 31 43;
-    --heading: 208 224 245;
-    --subtle: 30 39 54;
-    --subtle-hover: 42 54 74;
-    --national: 52 199 111;
-    --national-soft: 21 45 32;
-    --religious: 214 165 95;
-    --religious-soft: 51 41 22;
-    --gold-soft: 51 43 20;
-  }
-}
+/* الافتراضي فاتح دائمًا: لا نتبع تفضيل النظام الداكن قبل اختيار المستخدم.
+   الوضع الداكن يُفعَّل فقط عند اختيار المستخدم (data-theme='dark'). */
 
 * {
   -webkit-tap-highlight-color: transparent;

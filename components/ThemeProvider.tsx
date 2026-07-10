@@ -32,11 +32,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     m.setAttribute('content', t === 'dark' ? '#0d1117' : '#0B2A4A');
   };
 
-  // بعد mount: اقرأ ما ضبطه السكربت المضمّن (أو تفضيل النظام) لمواءمة حالة React
+  // بعد mount: اقرأ ما ضبطه السكربت المضمّن لمواءمة حالة React (الافتراضي فاتح)
   useEffect(() => {
-    const current =
-      (document.documentElement.dataset.theme as Theme | undefined) ??
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const current = (document.documentElement.dataset.theme as Theme | undefined) ?? 'light';
     setThemeState(current);
     applyMeta(current);
   }, []);

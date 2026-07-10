@@ -22,7 +22,7 @@ function statusHint(s: Track180Stats): string {
 const RING_R = 48;
 const RING_C = 2 * Math.PI * RING_R;
 
-export function Track180Card({ today }: { today: string }) {
+export function Track180Card({ today, onOpenRange }: { today: string; onOpenRange: () => void }) {
   const { state } = useApp();
   const stats = useMemo(() => computeTrack180(state, today), [state, today]);
 
@@ -87,8 +87,12 @@ export function Track180Card({ today }: { today: string }) {
         </div>
       </div>
 
+      <button type="button" onClick={onOpenRange} className="btn btn-ghost mt-3 w-full text-sm">
+        <span aria-hidden>＋</span> تسجيل إجازة لعدة أيام
+      </button>
+
       <p className="mt-2 text-[11px] leading-relaxed text-muted">
-        الأيام بلا حالة تُحسب دوامًا تلقائيًا — سجّل إجازاتك بالضغط على اليوم. حساب إرشادي وليس مستندًا رسميًا.
+        الأيام بلا حالة تُحسب دوامًا تلقائيًا — سجّل إجازة يوم بالضغط عليه، أو فترة كاملة من الزر أعلاه. حساب إرشادي وليس مستندًا رسميًا.
       </p>
     </section>
   );

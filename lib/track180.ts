@@ -1,5 +1,5 @@
 import { isWeekendDow } from './calendarEngine';
-import { compareISO, dayOfWeek, daysInMonth, parseYMD, ymd } from './dateUtils';
+import { compareISO, dayOfWeek, daysInMonth, parseYMD, shiftMonth, ymd } from './dateUtils';
 import { effectiveHolidayMap, getEffectiveHolidayForDate } from './kuwaitHolidayService';
 import type { AppState, Track180LeaveType } from './types';
 
@@ -60,6 +60,56 @@ export function isTrack180Workday(iso: string, state: AppState): boolean {
   const { y, m, d } = parseYMD(iso);
   if (isWeekendDow(dayOfWeek(y, m, d), state.settings.weekendDows)) return false;
   return getEffectiveHolidayForDate(iso, state) === undefined;
+}
+
+/**
+ * أيام العمل داخل [startISO, endISO] شاملاً — تُطبَّق عليها حالة الإجازة عند التسجيل لفترة.
+ * تُستثنى نهاية الأسبوع والعطل الفعّالة (لا مُكرِّر أيام في dateUtils → نمشي شهرًا شهرًا).
+ * يُعكَس ترتيب البداية/النهاية تلقائيًا.
+ */
+export function track180WorkdaysInRange(state: AppState, startISO: string, endISO: string): string[] {
+  const [s, e] = compareISO(startISO, endISO) <= 0 ? [startISO, endISO] : [endISO, startISO];
+  const end = parseYMD(e);
+  const out: string[] = [];
+  let { y, m } = parseYMD(s);
+  while (y < end.y || (y === end.y && m <= end.m)) {
+    const dim = daysInMonth(y, m);
+    for (let d = 1; d <= dim; d++) {
+      const iso = ymd(y, m, d);
+      if (compareISO(iso, s) < 0 || compareISO(iso, e) > 0) continue;
+      if (isTrack180Workday(iso, state)) out.push(iso);
+    }
+    ({ y, m } = shiftMonth(y, m, 1));
+  }
+  return out;
+}
+
+/** تسجيل نوع إجازة على كل أيام العمل داخل الفترة (تُتجاهل نهاية الأسبوع والعطل). */
+export function setTrack180Range(
+  state: AppState,
+  type: Track180LeaveType,
+  startISO: string,
+  endISO: string,
+): AppState {
+  const days = track180WorkdaysInRange(state, startISO, endISO);
+  if (!days.length) return state;
+  const next = { ...state.track180Days };
+  for (const iso of days) next[iso] = type;
+  return { ...state, track180Days: next };
+}
+
+/** مسح كل الحالات المسجّلة داخل الفترة [startISO, endISO] شاملاً. */
+export function clearTrack180Range(state: AppState, startISO: string, endISO: string): AppState {
+  const [s, e] = compareISO(startISO, endISO) <= 0 ? [startISO, endISO] : [endISO, startISO];
+  const next = { ...state.track180Days };
+  let changed = false;
+  for (const iso of Object.keys(next)) {
+    if (compareISO(iso, s) >= 0 && compareISO(iso, e) <= 0) {
+      delete next[iso];
+      changed = true;
+    }
+  }
+  return changed ? { ...state, track180Days: next } : state;
 }
 
 /** الحساب الكامل لسنة «اليوم» الميلادية (todayISO بتوقيت الكويت من useToday). */

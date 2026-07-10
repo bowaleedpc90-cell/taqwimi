@@ -13,6 +13,7 @@ import { MonthNav } from './MonthNav';
 import { CalendarGrid } from './CalendarGrid';
 import { GeneralNote } from './GeneralNote';
 import { Track180Card } from './Track180Card';
+import { Track180RangeSheet } from './Track180RangeSheet';
 import { DaySheet } from './DaySheet';
 import type { CellVM } from './DayCell';
 import { ViewToggle } from './ViewToggle';
@@ -32,6 +33,7 @@ export function CalendarShell() {
   const [ym, setYm] = useState<{ y: number; m: number } | null>(null);
   const [sheetDate, setSheetDate] = useState<string | null>(null);
   const [holidayEdit, setHolidayEdit] = useState<HolidayEditing>(null);
+  const [rangeStart, setRangeStart] = useState<string | null>(null); // null = مغلق؛ تاريخ = مفتوح
 
   // تهيئة: أولوية لمعاملات الرابط (?y&m من عرض السنة)، وإلا الشهر الحالي بتوقيت الكويت
   useEffect(() => {
@@ -143,13 +145,26 @@ export function CalendarShell() {
         />
       )}
 
-      {state.settings.track180 && today && <Track180Card today={today} />}
+      {state.settings.track180 && today && <Track180Card today={today} onOpenRange={() => setRangeStart(today)} />}
 
       <Legend track180={state.settings.track180} />
 
       <BrandFooter />
 
-      {sheetDate && <DaySheet iso={sheetDate} onClose={() => setSheetDate(null)} />}
+      {sheetDate && (
+        <DaySheet
+          iso={sheetDate}
+          onClose={() => setSheetDate(null)}
+          onOpenRange={(iso) => {
+            setSheetDate(null);
+            setRangeStart(iso);
+          }}
+        />
+      )}
+
+      {rangeStart !== null && (
+        <Track180RangeSheet initialStart={rangeStart} onClose={() => setRangeStart(null)} />
+      )}
 
       <HolidayEditSheets year={ym.y} editing={holidayEdit} onClose={() => setHolidayEdit(null)} />
     </div>

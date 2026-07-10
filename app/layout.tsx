@@ -50,8 +50,9 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-// يُضبط قبل الرسم لمنع وميض السمة: يقرأ الاختيار المحفوظ أو تفضيل النظام.
-const themeInit = `(function(){try{var t=localStorage.getItem('taqwimi.theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.dataset.theme=t;}catch(e){}})();`;
+// يُضبط قبل الرسم لمنع وميض السمة: يقرأ الاختيار المحفوظ، والافتراضي فاتح (نهاري)
+// بغضّ النظر عن تفضيل النظام — المستخدم يبدّل للداكن يدويًا ويُحفظ اختياره.
+const themeInit = `(function(){try{var t=localStorage.getItem('taqwimi.theme');if(t!=='light'&&t!=='dark'){t='light';}document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -2,9 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  clearTrack180Range,
   computeTrack180,
   isTrack180Workday,
+  setTrack180Range,
   track180Status,
+  track180WorkdaysInRange,
   TRACK180_TARGET,
 } from '../track180';
 import { addCustomHoliday, deleteBuiltInHoliday } from '../holidayActions';
@@ -147,6 +150,54 @@ test('loadState — قيم track180Days المحفوظة تُقرأ كما هي'
   } finally {
     delete g.window;
   }
+});
+
+test('track180WorkdaysInRange — يوم عمل واحد = 1', () => {
+  assert.equal(track180WorkdaysInRange(stateWith(), '2026-07-05', '2026-07-05').length, 1);
+});
+
+test('track180WorkdaysInRange — أسبوع (أحد→سبت) = 5 (تُستثنى الجمعة/السبت)', () => {
+  assert.equal(track180WorkdaysInRange(stateWith(), '2026-07-05', '2026-07-11').length, 5);
+});
+
+test('track180WorkdaysInRange — يستثني العطل الرسمية داخل الفترة', () => {
+  // 23–27 فبراير: إثنين/ثلاثاء عمل، أربعاء(وطني)+خميس(تحرير) عطلة، جمعة راحة = 2
+  assert.equal(track180WorkdaysInRange(stateWith(), '2026-02-23', '2026-02-27').length, 2);
+});
+
+test('track180WorkdaysInRange — يعكس ترتيب البداية/النهاية تلقائيًا', () => {
+  assert.equal(track180WorkdaysInRange(stateWith(), '2026-07-11', '2026-07-05').length, 5);
+});
+
+test('track180WorkdaysInRange — فترة تعبر السنة تشمل أيامًا من السنتين وتستثني رأس السنة', () => {
+  const days = track180WorkdaysInRange(stateWith(), '2026-12-30', '2027-01-04');
+  assert.ok(days.some((d) => d.startsWith('2026-')));
+  assert.ok(days.some((d) => d.startsWith('2027-')));
+  assert.ok(!days.includes('2027-01-01')); // رأس السنة الميلادية عطلة
+});
+
+test('setTrack180Range — يعلّم أيام العمل فقط بالنوع المحدّد ولا يمسّ الراحة/العطل', () => {
+  const s = setTrack180Range(stateWith(), 'sick', '2026-07-05', '2026-07-11');
+  assert.equal(s.track180Days['2026-07-05'], 'sick'); // أحد
+  assert.equal(s.track180Days['2026-07-09'], 'sick'); // خميس
+  assert.equal(s.track180Days['2026-07-10'], undefined); // جمعة
+  assert.equal(s.track180Days['2026-07-11'], undefined); // سبت
+  assert.equal(Object.keys(s.track180Days).length, 5);
+});
+
+test('setTrack180Range — الأثر على العدّاد يساوي عدد أيام العمل المسجّلة', () => {
+  const today = '2026-07-15';
+  const base = computeTrack180(stateWith(), today);
+  const s = setTrack180Range(stateWith(), 'annual', '2026-07-05', '2026-07-09'); // 5 أيام عمل ماضية
+  assert.equal(computeTrack180(s, today).completedDays, base.completedDays - 5);
+});
+
+test('clearTrack180Range — يمسح الحالات داخل الفترة فقط', () => {
+  const seeded = stateWith({ '2026-07-06': 'annual', '2026-07-08': 'sick', '2026-08-03': 'emergency' });
+  const cleared = clearTrack180Range(seeded, '2026-07-01', '2026-07-31');
+  assert.equal(cleared.track180Days['2026-07-06'], undefined);
+  assert.equal(cleared.track180Days['2026-07-08'], undefined);
+  assert.equal(cleared.track180Days['2026-08-03'], 'emergency'); // خارج الفترة يبقى
 });
 
 test('هدف مستحيل — كل أيام العمل إجازات ⇒ منجز 0، متاح 0، خطر', () => {

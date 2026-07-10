@@ -16,7 +16,15 @@ function fullDate(iso: string): string {
   return `${AR_WEEKDAYS[dayOfWeek(y, m, d)]}، ${d} ${AR_MONTHS[m - 1]} ${y}`;
 }
 
-export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void }) {
+export function DaySheet({
+  iso,
+  onClose,
+  onOpenRange,
+}: {
+  iso: string;
+  onClose: () => void;
+  onOpenRange?: (iso: string) => void;
+}) {
   const { state, update } = useApp();
 
   const holiday = useMemo(() => getEffectiveHolidayForDate(iso, state), [iso, state]);
@@ -153,6 +161,15 @@ export function DaySheet({ iso, onClose }: { iso: string; onClose: () => void })
               <p className="mt-1.5 text-[11px] text-muted">
                 اليوم بلا حالة يُحسب دوامًا تلقائيًا — حدّد نوع الإجازة فقط عند الغياب.
               </p>
+              {onOpenRange && (
+                <button
+                  type="button"
+                  onClick={() => onOpenRange(iso)}
+                  className="btn btn-ghost mt-2 w-full text-sm"
+                >
+                  <span aria-hidden>＋</span> تسجيل إجازة لعدة أيام من هذا اليوم
+                </button>
+              )}
             </>
           ) : (
             <>
