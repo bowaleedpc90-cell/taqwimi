@@ -10,6 +10,7 @@ import {
   TRACK180_LEAVE_TYPES,
 } from '@/lib/track180';
 import type { Track180LeaveType } from '@/lib/types';
+import { useT } from './LanguageProvider';
 import { useApp } from './AppStateProvider';
 import { BottomSheet } from './BottomSheet';
 
@@ -18,6 +19,7 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 /** تسجيل/مسح إجازة على فترة (عدة أيام) دفعة واحدة — تُطبَّق على أيام العمل فقط. */
 export function Track180RangeSheet({ initialStart, onClose }: { initialStart: string; onClose: () => void }) {
   const { state, update } = useApp();
+  const t = useT();
   const startId = useId();
   const endId = useId();
   const [type, setType] = useState<Track180LeaveType>('annual');
@@ -46,20 +48,20 @@ export function Track180RangeSheet({ initialStart, onClose }: { initialStart: st
   }
 
   return (
-    <BottomSheet open onClose={onClose} title="تسجيل إجازة لعدة أيام" subtitle="اختر النوع وفترة الإجازة">
+    <BottomSheet open onClose={onClose} title={t('تسجيل إجازة لعدة أيام')} subtitle={t('اختر النوع وفترة الإجازة')}>
       <div className="mb-4">
-        <div className="mb-1.5 text-sm font-bold text-heading">نوع الإجازة</div>
-        <div role="group" aria-label="نوع الإجازة" className="flex flex-wrap gap-2">
-          {TRACK180_LEAVE_ORDER.map((t) => (
+        <div className="mb-1.5 text-sm font-bold text-heading">{t('نوع الإجازة')}</div>
+        <div role="group" aria-label={t('نوع الإجازة')} className="flex flex-wrap gap-2">
+          {TRACK180_LEAVE_ORDER.map((lt) => (
             <button
-              key={t}
+              key={lt}
               type="button"
-              onClick={() => setType(t)}
-              aria-pressed={type === t}
-              className={`chip ${type === t ? 'border-navy bg-navy text-white' : 'text-ink'}`}
+              onClick={() => setType(lt)}
+              aria-pressed={type === lt}
+              className={`chip ${type === lt ? 'border-navy bg-navy text-white' : 'text-ink'}`}
             >
-              <span aria-hidden>{TRACK180_LEAVE_TYPES[t].emoji}</span>
-              {TRACK180_LEAVE_TYPES[t].label}
+              <span aria-hidden>{TRACK180_LEAVE_TYPES[lt].emoji}</span>
+              {t(TRACK180_LEAVE_TYPES[lt].label)}
             </button>
           ))}
         </div>
@@ -68,7 +70,7 @@ export function Track180RangeSheet({ initialStart, onClose }: { initialStart: st
       <div className="mb-4 grid grid-cols-2 gap-3">
         <div>
           <label htmlFor={startId} className="mb-1.5 block text-sm font-bold text-heading">
-            من
+            {t('من')}
           </label>
           <input
             id={startId}
@@ -80,7 +82,7 @@ export function Track180RangeSheet({ initialStart, onClose }: { initialStart: st
         </div>
         <div>
           <label htmlFor={endId} className="mb-1.5 block text-sm font-bold text-heading">
-            إلى
+            {t('إلى')}
           </label>
           <input
             id={endId}
@@ -95,23 +97,23 @@ export function Track180RangeSheet({ initialStart, onClose }: { initialStart: st
 
       <p className="mb-4 rounded-xl border border-line bg-canvas px-3 py-2 text-sm leading-relaxed text-muted">
         {!valid ? (
-          'اختر تاريخ البداية والنهاية.'
+          t('اختر تاريخ البداية والنهاية.')
         ) : workdayCount > 0 ? (
           <>
-            سيتم تسجيل <span className="num font-bold text-heading">{workdayCount}</span> يوم عمل ضمن الفترة —
-            تُستثنى نهاية الأسبوع والعطل الرسمية.
+            {t('سيتم تسجيل')} <span className="num font-bold text-heading">{workdayCount}</span>{' '}
+            {t('يوم عمل ضمن الفترة — تُستثنى نهاية الأسبوع والعطل الرسمية.')}
           </>
         ) : (
-          'لا توجد أيام عمل ضمن الفترة المختارة (كلها راحة أو عطل).'
+          t('لا توجد أيام عمل ضمن الفترة المختارة (كلها راحة أو عطل).')
         )}
       </p>
 
       <div className="flex flex-col gap-2">
         <button type="button" onClick={save} disabled={!valid || workdayCount === 0} className="btn btn-primary w-full">
-          حفظ الفترة
+          {t('حفظ الفترة')}
         </button>
         <button type="button" onClick={clearRange} disabled={!valid} className="btn btn-ghost w-full">
-          مسح الحالات في الفترة
+          {t('مسح الحالات في الفترة')}
         </button>
       </div>
     </BottomSheet>

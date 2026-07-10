@@ -7,12 +7,14 @@ import { effectiveHolidayMap } from '@/lib/kuwaitHolidayService';
 import type { Holiday } from '@/lib/types';
 import { useApp } from './AppStateProvider';
 import { useToday } from '@/hooks/useToday';
+import { useLang } from './LanguageProvider';
 import { ViewToggle } from './ViewToggle';
 import { MiniMonth } from './MiniMonth';
 
 export function YearView() {
   const { state, hydrated } = useApp();
   const today = useToday();
+  const { lang, t } = useLang();
   const [year, setYear] = useState<number | null>(null);
 
   useEffect(() => {
@@ -37,10 +39,10 @@ export function YearView() {
         <button
           type="button"
           onClick={() => setYear((y) => (y ?? 0) - 1)}
-          aria-label="السنة السابقة"
+          aria-label={t('السنة السابقة')}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d={lang === 'en' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} /></svg>
         </button>
         <div className="flex flex-col items-center">
           <div className="num text-xl font-extrabold text-heading">{year}</div>
@@ -50,17 +52,17 @@ export function YearView() {
               onClick={() => setYear(parseYMD(today).y)}
               className="mt-0.5 rounded-full bg-gold-soft px-3 py-0.5 text-xs font-bold text-gold"
             >
-              السنة الحالية
+              {t('السنة الحالية')}
             </button>
           )}
         </div>
         <button
           type="button"
           onClick={() => setYear((y) => (y ?? 0) + 1)}
-          aria-label="السنة التالية"
+          aria-label={t('السنة التالية')}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d={lang === 'en' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} /></svg>
         </button>
       </div>
 
@@ -75,6 +77,7 @@ export function YearView() {
             dayNotes={state.dayNotes}
             itemDates={itemDates}
             holidays={holidays}
+            lang={lang}
           />
         ))}
       </div>
@@ -83,7 +86,7 @@ export function YearView() {
         href={{ pathname: '/print', query: { scope: 'year', y: year } }}
         className="btn btn-gold mt-4 w-full"
       >
-        🖨️ طباعة السنة كاملة ({year})
+        🖨️ {t('طباعة السنة كاملة ({n})', { n: year })}
       </Link>
     </div>
   );

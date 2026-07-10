@@ -7,6 +7,7 @@ import { hijriMonthLabel } from '@/lib/hijriUtils';
 import { effectiveHolidayMap } from '@/lib/kuwaitHolidayService';
 import type { Holiday, Settings } from '@/lib/types';
 import { useApp } from './AppStateProvider';
+import { useLang, useT } from './LanguageProvider';
 import { useToday } from '@/hooks/useToday';
 import { useSwipe } from '@/hooks/useSwipe';
 import { MonthNav } from './MonthNav';
@@ -29,6 +30,7 @@ function visibleHoliday(h: Holiday | undefined, settings: Settings): Holiday | u
 
 export function CalendarShell() {
   const { state, hydrated, update } = useApp();
+  const { lang } = useLang();
   const today = useToday();
   const [ym, setYm] = useState<{ y: number; m: number } | null>(null);
   const [sheetDate, setSheetDate] = useState<string | null>(null);
@@ -61,6 +63,7 @@ export function CalendarShell() {
       weekStart: state.settings.weekStart,
       weekendDows: state.settings.weekendDows,
       todayISO: today,
+      lang,
     });
     const hmap = effectiveHolidayMap(ym.y, state);
     const itemsByDate: Record<string, typeof state.items> = {};
@@ -84,7 +87,7 @@ export function CalendarShell() {
     );
 
     return { grid, cells, weekendCols };
-  }, [ym, state, today]);
+  }, [ym, state, today, lang]);
 
   if (!hydrated || !ym || !view) {
     return (
@@ -116,8 +119,8 @@ export function CalendarShell() {
 
       <div {...swipe}>
         <MonthNav
-          title={formatMonthTitle(ym.y, ym.m)}
-          hijri={hijriMonthLabel(ym.y, ym.m)}
+          title={formatMonthTitle(ym.y, ym.m, lang)}
+          hijri={hijriMonthLabel(ym.y, ym.m, lang)}
           onPrev={() => setYm(shiftMonth(ym.y, ym.m, -1))}
           onNext={() => setYm(shiftMonth(ym.y, ym.m, 1))}
           onToday={() => today && setYm(parseYMD(today))}
@@ -172,6 +175,7 @@ export function CalendarShell() {
 }
 
 function Legend({ track180 }: { track180: boolean }) {
+  const t = useT();
   // np: عنصر يظهر على الشاشة فقط ولا يُطبع (نقطة إجازة تتبع ١٨٠)
   const items: { c: string; l: string; np?: boolean }[] = [
     { c: 'bg-national', l: 'عطلة وطنية' },
@@ -185,7 +189,7 @@ function Legend({ track180 }: { track180: boolean }) {
       {items.map((it) => (
         <span key={it.l} className={`inline-flex items-center gap-1.5 ${it.np ? 'no-print' : ''}`}>
           <span className={`h-3 w-3 rounded-full ${it.c}`} />
-          {it.l}
+          {t(it.l)}
         </span>
       ))}
     </div>

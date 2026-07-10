@@ -1,5 +1,13 @@
-import { AR_WEEKDAYS, AR_WEEKDAYS_LETTER, AR_WEEKDAYS_SHORT } from './constants';
+import {
+  AR_WEEKDAYS,
+  AR_WEEKDAYS_LETTER,
+  AR_WEEKDAYS_SHORT,
+  EN_WEEKDAYS,
+  EN_WEEKDAYS_LETTER,
+  EN_WEEKDAYS_SHORT,
+} from './constants';
 import { dayOfWeek, daysInMonth, ymd } from './dateUtils';
+import type { Lang } from './types';
 
 export interface DayCellModel {
   iso: string | null;   // null لخانات الحشو
@@ -25,17 +33,24 @@ export const isWeekendDow = (dow: number, weekendDows: number[] = [5, 6]): boole
   weekendDows.includes(dow);
 
 /** أسماء الأيام مُدوَّرة لتبدأ من weekStart. */
-export function getWeekdayLabels(weekStart: number, short = false): string[] {
-  const src = short ? AR_WEEKDAYS_SHORT : AR_WEEKDAYS;
+export function getWeekdayLabels(weekStart: number, short = false, lang: Lang = 'ar'): string[] {
+  const src = short
+    ? lang === 'en'
+      ? EN_WEEKDAYS_SHORT
+      : AR_WEEKDAYS_SHORT
+    : lang === 'en'
+      ? EN_WEEKDAYS
+      : AR_WEEKDAYS;
   const out: string[] = [];
   for (let i = 0; i < 7; i++) out.push(src[(weekStart + i) % 7]);
   return out;
 }
 
 /** حرف واحد مميّز لكل يوم، مُدوَّر ليبدأ من weekStart (لعرض السنة). */
-export function getWeekdayLetters(weekStart: number): string[] {
+export function getWeekdayLetters(weekStart: number, lang: Lang = 'ar'): string[] {
+  const src = lang === 'en' ? EN_WEEKDAYS_LETTER : AR_WEEKDAYS_LETTER;
   const out: string[] = [];
-  for (let i = 0; i < 7; i++) out.push(AR_WEEKDAYS_LETTER[(weekStart + i) % 7]);
+  for (let i = 0; i < 7; i++) out.push(src[(weekStart + i) % 7]);
   return out;
 }
 
@@ -45,6 +60,7 @@ export interface BuildMonthGridOpts {
   weekStart?: number;     // الافتراضي 0 (الأحد)
   weekendDows?: number[]; // الافتراضي [5,6]
   todayISO?: string;      // من todayInKuwait()؛ '' يُعطّل تمييز اليوم
+  lang?: Lang;            // لغة تسميات الأيام (الافتراضي عربي)
 }
 
 /**
@@ -56,6 +72,7 @@ export function buildMonthGrid(opts: BuildMonthGridOpts): MonthGrid {
   const weekStart = opts.weekStart ?? 0;
   const weekendDows = opts.weekendDows ?? [5, 6];
   const todayISO = opts.todayISO ?? '';
+  const lang = opts.lang ?? 'ar';
 
   const firstDow = dayOfWeek(year, month, 1);
   const lead = (((firstDow - weekStart) % 7) + 7) % 7; // خانات حشو قبل اليوم الأول
@@ -85,9 +102,9 @@ export function buildMonthGrid(opts: BuildMonthGridOpts): MonthGrid {
     year,
     month,
     weekStart,
-    weekdayLabels: getWeekdayLabels(weekStart, false),
-    weekdayLabelsShort: getWeekdayLabels(weekStart, true),
-    weekdayLetters: getWeekdayLetters(weekStart),
+    weekdayLabels: getWeekdayLabels(weekStart, false, lang),
+    weekdayLabelsShort: getWeekdayLabels(weekStart, true, lang),
+    weekdayLetters: getWeekdayLetters(weekStart, lang),
     cells,
     weeks,
   };

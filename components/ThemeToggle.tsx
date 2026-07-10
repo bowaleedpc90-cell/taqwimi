@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from './ThemeProvider';
+import { useT } from './LanguageProvider';
 
 function SunIcon() {
   return (
@@ -22,6 +23,7 @@ function MoonIcon() {
 /** زر تبديل الوضع الليلي/النهاري. */
 export function ThemeToggle({ className = '' }: { className?: string }) {
   const { theme, toggle } = useTheme();
+  const t = useT();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -30,8 +32,8 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
     <button
       type="button"
       onClick={toggle}
-      aria-label={isDark ? 'التبديل إلى الوضع النهاري' : 'التبديل إلى الوضع الليلي'}
-      title={isDark ? 'الوضع النهاري' : 'الوضع الليلي'}
+      aria-label={isDark ? t('التبديل إلى الوضع النهاري') : t('التبديل إلى الوضع الليلي')}
+      title={isDark ? t('الوضع النهاري') : t('الوضع الليلي')}
       className={`flex h-10 w-10 items-center justify-center rounded-full bg-subtle text-heading transition active:scale-95 ${className}`}
     >
       {/* قبل mount نعرض أيقونة محايدة لتجنّب عدم تطابق الترطيب */}

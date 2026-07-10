@@ -1,5 +1,7 @@
 // أنواع مشتركة عبر التطبيق
 
+export type Lang = 'ar' | 'en'; // لغة الواجهة — العربية الأساسية (RTL)، الإنجليزية (LTR)
+
 export type HolidayType = 'national' | 'religious' | 'government' | 'custom';
 
 export interface Holiday {

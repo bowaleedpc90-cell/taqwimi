@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { HOLIDAY_TYPE_LABEL } from '@/lib/constants';
 import type { HolidayType } from '@/lib/types';
+import { useLang } from './LanguageProvider';
+import { holidayTypeLabel } from '@/lib/i18n';
 import { BottomSheet } from './BottomSheet';
 
 const TYPE_ORDER: HolidayType[] = ['national', 'government', 'religious', 'custom'];
@@ -22,7 +23,7 @@ export function HolidayFormSheet({
   yearLock,
   onSave,
   onDelete,
-  deleteLabel = 'حذف',
+  deleteLabel,
   onRestore,
 }: {
   open: boolean;
@@ -36,6 +37,7 @@ export function HolidayFormSheet({
   deleteLabel?: string;
   onRestore?: () => void;
 }) {
+  const { lang, t } = useLang();
   const [nameAr, setNameAr] = useState(initial.nameAr);
   const [gregorianDate, setDate] = useState(initial.gregorianDate);
   const [type, setType] = useState<HolidayType>(initial.type);
@@ -49,20 +51,20 @@ export function HolidayFormSheet({
   }
 
   return (
-    <BottomSheet open={open} onClose={onClose} title={title} subtitle="الاسم والتاريخ والنوع">
+    <BottomSheet open={open} onClose={onClose} title={title} subtitle={t('الاسم والتاريخ والنوع')}>
       <div className="mb-4">
-        <label className="mb-1.5 block text-sm font-bold text-heading">الاسم</label>
+        <label className="mb-1.5 block text-sm font-bold text-heading">{t('الاسم')}</label>
         <input
           className="field"
           value={nameAr}
           onChange={(e) => setNameAr(e.target.value)}
-          placeholder="مثال: عيد الأضحى، إجازة خاصة…"
+          placeholder={t('مثال: عيد الأضحى، إجازة خاصة…')}
           autoFocus
         />
       </div>
 
       <div className="mb-4">
-        <label className="mb-1.5 block text-sm font-bold text-heading">التاريخ (ميلادي)</label>
+        <label className="mb-1.5 block text-sm font-bold text-heading">{t('التاريخ (ميلادي)')}</label>
         <input
           type="date"
           className="field"
@@ -73,22 +75,22 @@ export function HolidayFormSheet({
         />
         {yearLock !== undefined && !inYear && gregorianDate !== '' && (
           <p className="mt-1.5 text-xs font-semibold text-danger">
-            تاريخ العطلة الرسمية لازم يكون ضمن سنة {yearLock}. لمناسبة في سنة أخرى استخدم «إضافة».
+            {t('تاريخ العطلة الرسمية لازم يكون ضمن سنة {n}. لمناسبة في سنة أخرى استخدم «إضافة».', { n: yearLock })}
           </p>
         )}
       </div>
 
       <div className="mb-4">
-        <div className="mb-1.5 text-sm font-bold text-heading">النوع</div>
+        <div className="mb-1.5 text-sm font-bold text-heading">{t('النوع')}</div>
         <div className="flex flex-wrap gap-2">
-          {TYPE_ORDER.map((t) => (
+          {TYPE_ORDER.map((ht) => (
             <button
-              key={t}
+              key={ht}
               type="button"
-              onClick={() => setType(t)}
-              className={`chip ${type === t ? 'border-navy bg-navy text-white' : 'text-ink'}`}
+              onClick={() => setType(ht)}
+              className={`chip ${type === ht ? 'border-navy bg-navy text-white' : 'text-ink'}`}
             >
-              {HOLIDAY_TYPE_LABEL[t]}
+              {holidayTypeLabel(lang, ht)}
             </button>
           ))}
         </div>
@@ -96,22 +98,22 @@ export function HolidayFormSheet({
 
       {estimatedHint && (
         <p className="mb-4 rounded-xl bg-religious-soft px-3 py-2 text-xs leading-relaxed text-religious">
-          هذه المناسبة تقديرية (تعتمد على رؤية الهلال). عند تأكّدها رسميًا احفظها هنا لتثبيتها وإزالة شارة «تقديري».
+          {t('هذه المناسبة تقديرية (تعتمد على رؤية الهلال). عند تأكّدها رسميًا احفظها هنا لتثبيتها وإزالة شارة «تقديري».')}
         </p>
       )}
 
       <div className="flex flex-col gap-2">
         <button type="button" onClick={save} disabled={!valid} className="btn btn-primary w-full">
-          حفظ
+          {t('حفظ')}
         </button>
         {onRestore && (
           <button type="button" onClick={onRestore} className="btn btn-ghost w-full">
-            استعادة الأصل
+            {t('استعادة الأصل')}
           </button>
         )}
         {onDelete && (
           <button type="button" onClick={onDelete} className="btn btn-danger w-full">
-            {deleteLabel}
+            {deleteLabel ?? t('حذف')}
           </button>
         )}
       </div>

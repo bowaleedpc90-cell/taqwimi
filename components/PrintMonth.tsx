@@ -1,7 +1,10 @@
+'use client';
+
 import { CATEGORIES, HOLIDAY_TYPE_BG, HOLIDAY_TYPE_TEXT } from '@/lib/constants';
 import type { HolidayType } from '@/lib/types';
 import type { PrintDayVM, PrintMonthVM } from '@/lib/printTemplateEngine';
 import { EstimatedBadge } from './EstimatedBadge';
+import { useT } from './LanguageProvider';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
@@ -27,6 +30,7 @@ const LEGEND: { type: HolidayType; label: string }[] = [
 ];
 
 export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
+  const t = useT();
   const weeks = chunk(vm.cells, 7);
   return (
     <section className="print-page mb-6 flex min-h-[540px] flex-col overflow-hidden rounded-xl border border-line bg-surface p-4 shadow-card print:mb-0 print:min-h-0 print:rounded-none print:border-0 print:shadow-none">
@@ -35,7 +39,7 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
         <header className="mb-3 flex items-end justify-between border-b-2 border-navy pb-2">
           <div>
             <h2 className="text-2xl font-extrabold leading-none text-heading">{vm.title}</h2>
-            <div className="mt-1 text-sm font-semibold text-religious">{vm.hijriLabel} هـ</div>
+            <div className="mt-1 text-sm font-semibold text-religious">{vm.hijriLabel} {t('هـ')}</div>
           </div>
           <div className="flex items-center gap-1.5 text-base font-extrabold text-gold">
             <span aria-hidden>🗓️</span> تقويمي
@@ -68,7 +72,7 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
                       </div>
                       {cell.holiday && (
                         <div className={`holiday-name mt-0.5 text-[10px] font-bold leading-tight ${HOLIDAY_TYPE_TEXT[cell.holiday.type]}`}>
-                          {cell.holiday.nameAr}
+                          {cell.holidayLabel ?? cell.holiday.nameAr}
                         </div>
                       )}
                       {cell.items.map((it) => (
@@ -91,7 +95,7 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
         {/* ملاحظات الشهر */}
         {vm.generalNote && (
           <div className="general-note mt-2 rounded-lg border border-line bg-canvas/70 p-2 text-[11px] leading-relaxed text-ink">
-            <span className="font-bold text-heading">ملاحظات: </span>
+            <span className="font-bold text-heading">{t('ملاحظات: ')}</span>
             {vm.generalNote}
           </div>
         )}
@@ -102,12 +106,12 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
             {LEGEND.map((it) => (
               <span key={it.type} className="inline-flex items-center gap-1 text-[10px] font-semibold text-muted">
                 <span className={`inline-block h-2.5 w-2.5 rounded-sm ${HOLIDAY_TYPE_BG[it.type]} border border-line`} />
-                {it.label}
+                {t(it.label)}
               </span>
             ))}
             <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-muted">
               <span className="inline-block h-2.5 w-2.5 rounded-sm border border-line bg-weekend" />
-              نهاية الأسبوع
+              {t('نهاية الأسبوع')}
             </span>
           </div>
           <div className="flex shrink-0 items-center gap-2">

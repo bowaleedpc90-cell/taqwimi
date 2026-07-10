@@ -1,5 +1,6 @@
-import { AR_HIJRI_MONTHS } from './constants';
+import { AR_HIJRI_MONTHS, EN_HIJRI_MONTHS } from './constants';
 import { daysInMonth } from './dateUtils';
+import type { Lang } from './types';
 
 // نفس أساس خدمة العطل: islamic-civil مثبّت عند منتصف نهار UTC → نتيجة متطابقة على كل جهاز.
 // ملاحظة: هذا حساب رقمي بـ Date.UTC (ليس تحليل نص "YYYY-MM-DD")، فلا يخالف قواعد التواريخ.
@@ -23,7 +24,8 @@ function hijriOf(y: number, m: number, d: number): { hm: number; hy: number } {
  * أو عبر سنتين «ذو الحجة ١٤٤٧ – محرّم ١٤٤٨». تقريبية (تقويم حسابي).
  * نأخذ عدّة عيّنات خلال الشهر كي نلتقط أي شهر هجري أوسط (شهر ميلادي قد يلامس ٣ أشهر هجرية).
  */
-export function hijriMonthLabel(year: number, month: number): string {
+export function hijriMonthLabel(year: number, month: number, lang: Lang = 'ar'): string {
+  const names = lang === 'en' ? EN_HIJRI_MONTHS : AR_HIJRI_MONTHS;
   const dim = daysInMonth(year, month);
   const samples = [1, 5, 10, 15, 20, 25, dim];
   const seen: { hy: number; hm: number }[] = [];
@@ -34,7 +36,7 @@ export function hijriMonthLabel(year: number, month: number): string {
   // seen بترتيب زمني (العيّنات تصاعدية والهجري رتيب داخل الشهر) — نجمّع المتتالي حسب السنة.
   const groups: { hy: number; names: string[] }[] = [];
   for (const s of seen) {
-    const name = AR_HIJRI_MONTHS[s.hm - 1];
+    const name = names[s.hm - 1];
     const last = groups[groups.length - 1];
     if (last && last.hy === s.hy) last.names.push(name);
     else groups.push({ hy: s.hy, names: [name] });

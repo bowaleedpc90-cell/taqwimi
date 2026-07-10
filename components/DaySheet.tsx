@@ -1,19 +1,22 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { CATEGORIES, CATEGORY_ORDER, COLOR_SWATCHES, AR_MONTHS, AR_WEEKDAYS, HOLIDAY_TYPE_TINT } from '@/lib/constants';
+import { CATEGORIES, CATEGORY_ORDER, COLOR_SWATCHES, HOLIDAY_TYPE_TINT } from '@/lib/constants';
 import { dayOfWeek, parseYMD } from '@/lib/dateUtils';
 import { getEffectiveHolidayForDate } from '@/lib/kuwaitHolidayService';
+import { categoryLabel, holidayName, monthNames, weekdayNames } from '@/lib/i18n';
 import { uid } from '@/lib/storage';
 import { isTrack180Workday, TRACK180_LEAVE_ORDER, TRACK180_LEAVE_TYPES } from '@/lib/track180';
-import type { Category, DayItem, Track180LeaveType } from '@/lib/types';
+import type { Category, DayItem, Lang, Track180LeaveType } from '@/lib/types';
 import { useApp } from './AppStateProvider';
+import { useLang } from './LanguageProvider';
 import { BottomSheet } from './BottomSheet';
 import { EstimatedBadge } from './EstimatedBadge';
 
-function fullDate(iso: string): string {
+function fullDate(iso: string, lang: Lang): string {
   const { y, m, d } = parseYMD(iso);
-  return `${AR_WEEKDAYS[dayOfWeek(y, m, d)]}، ${d} ${AR_MONTHS[m - 1]} ${y}`;
+  const sep = lang === 'en' ? ', ' : '، ';
+  return `${weekdayNames(lang)[dayOfWeek(y, m, d)]}${sep}${d} ${monthNames(lang)[m - 1]} ${y}`;
 }
 
 export function DaySheet({
@@ -26,6 +29,7 @@ export function DaySheet({
   onOpenRange?: (iso: string) => void;
 }) {
   const { state, update } = useApp();
+  const { lang, t } = useLang();
 
   const holiday = useMemo(() => getEffectiveHolidayForDate(iso, state), [iso, state]);
   const dayItems = useMemo(() => state.items.filter((i) => i.date === iso), [state.items, iso]);
@@ -102,23 +106,23 @@ export function DaySheet({
   }
 
   return (
-    <BottomSheet open onClose={onClose} title={fullDate(iso)} subtitle="أضف مناسباتك ونوتة اليوم">
+    <BottomSheet open onClose={onClose} title={fullDate(iso, lang)} subtitle={t('أضف مناسباتك ونوتة اليوم')}>
       {holiday && (
         <div className={`mb-4 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold ${HOLIDAY_TYPE_TINT[holiday.type]}`}>
           <span aria-hidden>📅</span>
-          <span>{holiday.nameAr}</span>
+          <span>{holidayName(lang, holiday)}</span>
           {holiday.isEstimated && <EstimatedBadge className="ms-auto" />}
         </div>
       )}
 
       {/* نوت اليوم */}
       <div className="mb-5">
-        <label className="mb-1.5 block text-sm font-bold text-heading">نوتة داخل اليوم</label>
+        <label className="mb-1.5 block text-sm font-bold text-heading">{t('نوتة داخل اليوم')}</label>
         <textarea
           className="field min-h-[72px] resize-y"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="تظهر داخل خانة اليوم وتُطبع معه…"
+          placeholder={t('تظهر داخل خانة اليوم وتُطبع معه…')}
         />
       </div>
 
@@ -127,12 +131,12 @@ export function DaySheet({
         <div className="mb-5">
           <div className="mb-1.5 flex items-center gap-2 text-sm font-bold text-heading">
             <span aria-hidden>🎯</span>
-            حالة الدوام
-            <span className="text-xs font-semibold text-muted">تتبع ١٨٠ يوم</span>
+            {t('حالة الدوام')}
+            <span className="text-xs font-semibold text-muted">{t('تتبع ١٨٠ يوم')}</span>
           </div>
           {isWorkday ? (
             <>
-              <div role="group" aria-label="حالة الدوام" className="flex flex-wrap gap-2">
+              <div role="group" aria-label={t('حالة الدوام')} className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => setDayStatus(null)}
@@ -140,26 +144,26 @@ export function DaySheet({
                   className={`chip ${dayStatus === undefined ? 'border-navy bg-navy text-white' : 'text-ink'}`}
                 >
                   <span aria-hidden>💼</span>
-                  دوام
+                  {t('دوام')}
                 </button>
-                {TRACK180_LEAVE_ORDER.map((t) => {
-                  const active = dayStatus === t;
+                {TRACK180_LEAVE_ORDER.map((lt) => {
+                  const active = dayStatus === lt;
                   return (
                     <button
-                      key={t}
+                      key={lt}
                       type="button"
-                      onClick={() => setDayStatus(active ? null : t)}
+                      onClick={() => setDayStatus(active ? null : lt)}
                       aria-pressed={active}
                       className={`chip ${active ? 'border-navy bg-navy text-white' : 'text-ink'}`}
                     >
-                      <span aria-hidden>{TRACK180_LEAVE_TYPES[t].emoji}</span>
-                      {TRACK180_LEAVE_TYPES[t].label}
+                      <span aria-hidden>{TRACK180_LEAVE_TYPES[lt].emoji}</span>
+                      {t(TRACK180_LEAVE_TYPES[lt].label)}
                     </button>
                   );
                 })}
               </div>
               <p className="mt-1.5 text-[11px] text-muted">
-                اليوم بلا حالة يُحسب دوامًا تلقائيًا — حدّد نوع الإجازة فقط عند الغياب.
+                {t('اليوم بلا حالة يُحسب دوامًا تلقائيًا — حدّد نوع الإجازة فقط عند الغياب.')}
               </p>
               {onOpenRange && (
                 <button
@@ -167,16 +171,18 @@ export function DaySheet({
                   onClick={() => onOpenRange(iso)}
                   className="btn btn-ghost mt-2 w-full text-sm"
                 >
-                  <span aria-hidden>＋</span> تسجيل إجازة لعدة أيام من هذا اليوم
+                  <span aria-hidden>＋</span> {t('تسجيل إجازة لعدة أيام من هذا اليوم')}
                 </button>
               )}
             </>
           ) : (
             <>
-              <p className="text-xs text-muted">يوم راحة أو عطلة رسمية — لا يدخل في حسبة الدوام.</p>
+              <p className="text-xs text-muted">{t('يوم راحة أو عطلة رسمية — لا يدخل في حسبة الدوام.')}</p>
               {dayStatus !== undefined && (
                 <button type="button" onClick={() => setDayStatus(null)} className="btn btn-ghost mt-2 w-full text-sm">
-                  إزالة الحالة المسجّلة سابقًا ({TRACK180_LEAVE_TYPES[dayStatus]?.label ?? 'إجازة'})
+                  {t('إزالة الحالة المسجّلة سابقًا ({label})', {
+                    label: t(TRACK180_LEAVE_TYPES[dayStatus]?.label ?? 'إجازة'),
+                  })}
                 </button>
               )}
             </>
@@ -187,7 +193,7 @@ export function DaySheet({
       {/* الإضافات الحالية */}
       {dayItems.length > 0 && (
         <div className="mb-5">
-          <div className="mb-2 text-sm font-bold text-heading">إضافات هذا اليوم</div>
+          <div className="mb-2 text-sm font-bold text-heading">{t('إضافات هذا اليوم')}</div>
           <ul className="flex flex-col gap-2">
             {dayItems.map((it) => (
               <li key={it.id} className="flex items-center gap-2 rounded-xl border border-line bg-canvas px-3 py-2">
@@ -204,14 +210,14 @@ export function DaySheet({
                   onClick={() => editItem(it)}
                   className="rounded-lg bg-subtle px-2 py-1 text-xs font-bold text-heading"
                 >
-                  تعديل
+                  {t('تعديل')}
                 </button>
                 <button
                   type="button"
                   onClick={() => deleteItem(it.id)}
                   className="rounded-lg bg-danger-soft px-2 py-1 text-xs font-bold text-danger"
                 >
-                  حذف
+                  {t('حذف')}
                 </button>
               </li>
             ))}
@@ -221,20 +227,20 @@ export function DaySheet({
 
       {/* نموذج الإضافة/التعديل */}
       <div className="rounded-xl2 border border-line bg-canvas p-3">
-        <div className="mb-2 text-sm font-bold text-heading">{editingId ? 'تعديل الإضافة' : 'إضافة جديدة'}</div>
+        <div className="mb-2 text-sm font-bold text-heading">{editingId ? t('تعديل الإضافة') : t('إضافة جديدة')}</div>
 
         <input
           className="field mb-3"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="العنوان (مثال: اجتماع، عيد ميلاد أحمد…)"
+          placeholder={t('العنوان (مثال: اجتماع، عيد ميلاد أحمد…)')}
           onKeyDown={(e) => {
             if (e.key === 'Enter') submitItem();
           }}
         />
 
         <div className="mb-3">
-          <div className="mb-1.5 text-xs font-semibold text-muted">التصنيف</div>
+          <div className="mb-1.5 text-xs font-semibold text-muted">{t('التصنيف')}</div>
           <div className="flex flex-wrap gap-2">
             {CATEGORY_ORDER.map((c) => {
               const active = category === c;
@@ -246,7 +252,7 @@ export function DaySheet({
                   className={`chip ${active ? 'border-navy bg-navy text-white' : 'text-ink'}`}
                 >
                   <span aria-hidden>{CATEGORIES[c].emoji}</span>
-                  {CATEGORIES[c].label}
+                  {categoryLabel(lang, c)}
                 </button>
               );
             })}
@@ -254,7 +260,7 @@ export function DaySheet({
         </div>
 
         <div className="mb-4">
-          <div className="mb-1.5 text-xs font-semibold text-muted">لون (اختياري)</div>
+          <div className="mb-1.5 text-xs font-semibold text-muted">{t('لون (اختياري)')}</div>
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
@@ -263,13 +269,13 @@ export function DaySheet({
                 color === null ? 'border-heading bg-subtle text-heading' : 'border-line text-muted'
               }`}
             >
-              حسب التصنيف
+              {t('حسب التصنيف')}
             </button>
             {COLOR_SWATCHES.map((c) => (
               <button
                 key={c}
                 type="button"
-                aria-label={`لون ${c}`}
+                aria-label={t('لون {c}', { c })}
                 onClick={() => setColor(c)}
                 className={`h-8 w-8 rounded-full border-2 transition ${
                   color === c ? 'border-heading ring-2 ring-heading/40' : 'border-surface'
@@ -282,11 +288,11 @@ export function DaySheet({
 
         <div className="flex gap-2">
           <button type="button" onClick={submitItem} disabled={!title.trim()} className="btn btn-primary flex-1">
-            {editingId ? 'حفظ التعديل' : 'إضافة'}
+            {editingId ? t('حفظ التعديل') : t('إضافة')}
           </button>
           {editingId && (
             <button type="button" onClick={resetForm} className="btn btn-ghost">
-              إلغاء
+              {t('إلغاء')}
             </button>
           )}
         </div>

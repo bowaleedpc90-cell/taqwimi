@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { AR_MONTHS } from '@/lib/constants';
 import { parseYMD, shiftMonth } from '@/lib/dateUtils';
+import { monthNames } from '@/lib/i18n';
 import { buildPrintMonth, buildPrintYear } from '@/lib/printTemplateEngine';
 import { useApp } from './AppStateProvider';
+import { useLang } from './LanguageProvider';
 import { useToday } from '@/hooks/useToday';
 import { PrintMonth } from './PrintMonth';
 
@@ -33,6 +34,7 @@ function SegButton({ active, onClick, children }: { active: boolean; onClick: ()
 
 export function PrintPreview() {
   const { state, hydrated } = useApp();
+  const { lang, t } = useLang();
   const today = useToday();
   const [scope, setScope] = useState<Scope>('month');
   const [paper, setPaper] = useState<Paper>('A4');
@@ -58,8 +60,12 @@ export function PrintPreview() {
 
   const pages = useMemo(() => {
     if (!ym) return [];
-    return scope === 'year' ? buildPrintYear(state, ym.y) : [buildPrintMonth(state, ym.y, ym.m)];
-  }, [scope, ym, state]);
+    return scope === 'year' ? buildPrintYear(state, ym.y, lang) : [buildPrintMonth(state, ym.y, ym.m, lang)];
+  }, [scope, ym, state, lang]);
+
+  // أسهم التنقّل تتبع اللغة: في الإنجليزية (LTR) السابق يسار والتالي يمين.
+  const prevPath = lang === 'en' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7';
+  const nextPath = lang === 'en' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7';
 
   const pageCss = useMemo(
     () =>
@@ -80,12 +86,12 @@ export function PrintPreview() {
       {/* أدوات التحكم — لا تُطبع */}
       <div className="no-print mb-4">
         <h1 className="mb-3 flex items-center gap-2 text-xl font-extrabold text-heading">
-          <span aria-hidden>🖨️</span> إعدادات الطباعة
+          <span aria-hidden>🖨️</span> {t('إعدادات الطباعة')}
         </h1>
 
         <div className="mb-3 inline-flex w-full rounded-full bg-subtle p-1">
-          <SegButton active={scope === 'month'} onClick={() => setScope('month')}>الشهر المختار</SegButton>
-          <SegButton active={scope === 'year'} onClick={() => setScope('year')}>السنة كاملة (١٢ صفحة)</SegButton>
+          <SegButton active={scope === 'month'} onClick={() => setScope('month')}>{t('الشهر المختار')}</SegButton>
+          <SegButton active={scope === 'year'} onClick={() => setScope('year')}>{t('السنة كاملة (١٢ صفحة)')}</SegButton>
         </div>
 
         {/* التنقّل */}
@@ -94,46 +100,46 @@ export function PrintPreview() {
             type="button"
             onClick={() => setYm((p) => (p ? (scope === 'year' ? { ...p, y: p.y - 1 } : shiftMonth(p.y, p.m, -1)) : p))}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading"
-            aria-label="السابق"
+            aria-label={t('السابق')}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d={prevPath} /></svg>
           </button>
           <div className="num text-lg font-extrabold text-heading">
-            {scope === 'year' ? ym.y : `${AR_MONTHS[ym.m - 1]} ${ym.y}`}
+            {scope === 'year' ? ym.y : `${monthNames(lang)[ym.m - 1]} ${ym.y}`}
           </div>
           <button
             type="button"
             onClick={() => setYm((p) => (p ? (scope === 'year' ? { ...p, y: p.y + 1 } : shiftMonth(p.y, p.m, 1)) : p))}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading"
-            aria-label="التالي"
+            aria-label={t('التالي')}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d={nextPath} /></svg>
           </button>
         </div>
 
         {/* حجم الورق + الاتجاه */}
         <div className="mb-3 grid grid-cols-2 gap-2">
           <div>
-            <div className="mb-1 text-xs font-bold text-muted">حجم الورق</div>
+            <div className="mb-1 text-xs font-bold text-muted">{t('حجم الورق')}</div>
             <div className="inline-flex w-full rounded-full bg-subtle p-1">
               <SegButton active={paper === 'A4'} onClick={() => setPaper('A4')}>A4</SegButton>
               <SegButton active={paper === 'A3'} onClick={() => setPaper('A3')}>A3</SegButton>
             </div>
           </div>
           <div>
-            <div className="mb-1 text-xs font-bold text-muted">الاتجاه</div>
+            <div className="mb-1 text-xs font-bold text-muted">{t('الاتجاه')}</div>
             <div className="inline-flex w-full rounded-full bg-subtle p-1">
-              <SegButton active={orientation === 'portrait'} onClick={() => setOrientation('portrait')}>عمودي</SegButton>
-              <SegButton active={orientation === 'landscape'} onClick={() => setOrientation('landscape')}>أفقي</SegButton>
+              <SegButton active={orientation === 'portrait'} onClick={() => setOrientation('portrait')}>{t('عمودي')}</SegButton>
+              <SegButton active={orientation === 'landscape'} onClick={() => setOrientation('landscape')}>{t('أفقي')}</SegButton>
             </div>
           </div>
         </div>
 
         <button type="button" onClick={() => window.print()} className="btn btn-primary w-full">
-          🖨️ طباعة الآن
+          🖨️ {t('طباعة الآن')}
         </button>
         <p className="mt-2 text-center text-xs text-muted">
-          فعّل «طباعة الخلفيات/الألوان» (Background graphics) في نافذة الطباعة لظهور ألوان العطل.
+          {t('فعّل «طباعة الخلفيات/الألوان» (Background graphics) في نافذة الطباعة لظهور ألوان العطل.')}
         </p>
       </div>
 

@@ -5,6 +5,8 @@ import type { DayCellModel } from '@/lib/calendarEngine';
 import { TRACK180_LEAVE_TYPES } from '@/lib/track180';
 import type { DayItem, Holiday, Track180LeaveType } from '@/lib/types';
 import { useLongPress } from '@/hooks/useLongPress';
+import { holidayName } from '@/lib/i18n';
+import { useLang } from './LanguageProvider';
 import { EstimatedBadge } from './EstimatedBadge';
 
 export interface CellVM {
@@ -35,6 +37,7 @@ export function DayCell({
   onLongPress?: (iso: string) => void;
 }) {
   const { cell, holiday, items, hasNote, track180 } = vm;
+  const { lang, t } = useLang();
   const { longFired, handlers } = useLongPress(() => cell.iso && onLongPress?.(cell.iso));
 
   if (!cell.inMonth || !cell.iso) {
@@ -74,10 +77,12 @@ export function DayCell({
           {track180 && (
             <span
               className="no-print h-2 w-2 rounded-full bg-danger"
-              aria-label={`إجازة ${TRACK180_LEAVE_TYPES[track180]?.label ?? ''} — تتبع ١٨٠`}
+              aria-label={t('إجازة {label} — تتبع ١٨٠', {
+                label: t(TRACK180_LEAVE_TYPES[track180]?.label ?? ''),
+              })}
             />
           )}
-          {hasNote && <span className="h-2 w-2 rounded-full bg-gold" aria-label="نوت" />}
+          {hasNote && <span className="h-2 w-2 rounded-full bg-gold" aria-label={t('نوت')} />}
         </span>
       </div>
 
@@ -87,7 +92,7 @@ export function DayCell({
             holiday,
           )}`}
         >
-          {holiday.nameAr}
+          {holidayName(lang, holiday)}
           {holiday.isEstimated && <EstimatedBadge className="ms-1 align-middle" />}
         </span>
       )}

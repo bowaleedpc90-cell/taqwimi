@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Cairo, Tajawal } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { LanguageProvider } from '@/components/LanguageProvider';
 import { AppStateProvider } from '@/components/AppStateProvider';
 import { AppShell } from '@/components/AppShell';
 
@@ -54,16 +55,23 @@ export const viewport: Viewport = {
 // بغضّ النظر عن تفضيل النظام — المستخدم يبدّل للداكن يدويًا ويُحفظ اختياره.
 const themeInit = `(function(){try{var t=localStorage.getItem('taqwimi.theme');if(t!=='light'&&t!=='dark'){t='light';}document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
+// يُضبط قبل الرسم لمنع وميض/انقلاب اللغة: يقرأ الاختيار المحفوظ، والافتراضي عربي (RTL).
+// الإنجليزية تقلب الاتجاه إلى LTR.
+const langInit = `(function(){try{var l=localStorage.getItem('taqwimi.lang');if(l!=='en'){l='ar';}document.documentElement.lang=l;document.documentElement.dir=l==='en'?'ltr':'rtl';}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning className={`${cairo.variable} ${tajawal.variable}`}>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
-        <ThemeProvider>
-          <AppStateProvider>
-            <AppShell>{children}</AppShell>
-          </AppStateProvider>
-        </ThemeProvider>
+        <script dangerouslySetInnerHTML={{ __html: langInit }} />
+        <LanguageProvider>
+          <ThemeProvider>
+            <AppStateProvider>
+              <AppShell>{children}</AppShell>
+            </AppStateProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

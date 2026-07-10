@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import { useT } from './LanguageProvider';
 
 const FOCUSABLE =
   'a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -18,6 +19,7 @@ export function BottomSheet({
   subtitle?: ReactNode;
   children: ReactNode;
 }) {
+  const t = useT();
   const panelRef = useRef<HTMLDivElement>(null);
   const prevFocus = useRef<HTMLElement | null>(null);
   // onClose في ref: حتى لا يعيد تأثير التركيز التشغيل عند كل إعادة رسم للأب (يسرق التركيز أثناء الكتابة)
@@ -97,7 +99,7 @@ export function BottomSheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label="إغلاق"
+            aria-label={t('إغلاق')}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-subtle text-heading"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">

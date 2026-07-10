@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useT } from './LanguageProvider';
 
 function normalize(path: string): string {
   if (!path) return '/';
@@ -18,6 +20,11 @@ const TABS = [
 
 export function BottomNav() {
   const pathname = normalize(usePathname());
+  const t = useT();
+  // شريط التنقّل مثبّت دائمًا (غير محجوب بـ hydrated). نؤجّل نص التبويب حتى mount
+  // كي لا يومض بالعربية لمستخدم الإنجليزي (النسخة الثابتة تُبنى بالعربي الافتراضي).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <nav
@@ -39,7 +46,8 @@ export function BottomNav() {
               style={{ minHeight: 60 }}
             >
               <Icon active={active} />
-              <span>{tab.label}</span>
+              {/* ' ' يحفظ ارتفاع السطر قبل mount فلا يقفز التخطيط */}
+              <span>{mounted ? t(tab.label) : ' '}</span>
               <span
                 className={`h-1 w-6 rounded-full transition ${active ? 'bg-gold' : 'bg-transparent'}`}
               />

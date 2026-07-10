@@ -1,4 +1,5 @@
-import { AR_MONTHS, KUWAIT_TZ } from './constants';
+import { AR_MONTHS, EN_MONTHS, KUWAIT_TZ } from './constants';
+import type { Lang } from './types';
 
 // ملاحظة صارمة: لا نمرّر أبدًا نص "YYYY-MM-DD" إلى new Date() ولا نستخدم toISOString()
 // للعرض. كل حساب لليوم من الأسبوع يتم بحساب صحيح صرف (Sakamoto) → لا انزياح بسبب
@@ -57,6 +58,6 @@ export function monthKey(y: number, m: number): string {
   return `${y}-${pad2(m)}`;
 }
 
-export function formatMonthTitle(y: number, m: number): string {
-  return `${AR_MONTHS[m - 1]} ${y}`;
+export function formatMonthTitle(y: number, m: number, lang: Lang = 'ar'): string {
+  return `${(lang === 'en' ? EN_MONTHS : AR_MONTHS)[m - 1]} ${y}`;
 }

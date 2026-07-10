@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { buildMonthGrid } from '@/lib/calendarEngine';
-import { AR_MONTHS } from '@/lib/constants';
-import type { Holiday, Settings } from '@/lib/types';
+import { monthNames } from '@/lib/i18n';
+import type { Holiday, Lang, Settings } from '@/lib/types';
 
 function tint(h: Holiday | undefined, isWeekend: boolean, settings: Settings): string {
   if (h) {
@@ -27,6 +27,7 @@ export function MiniMonth({
   dayNotes,
   itemDates,
   holidays,
+  lang = 'ar',
 }: {
   year: number;
   month: number;
@@ -35,6 +36,7 @@ export function MiniMonth({
   dayNotes: Record<string, string>;
   itemDates: Set<string>;
   holidays: Map<string, Holiday>;
+  lang?: Lang;
 }) {
   const grid = buildMonthGrid({
     year,
@@ -42,6 +44,7 @@ export function MiniMonth({
     weekStart: settings.weekStart,
     weekendDows: settings.weekendDows,
     todayISO,
+    lang,
   });
   const weekendCols = grid.weekdayLabelsShort.map((_, i) =>
     settings.weekendDows.includes((settings.weekStart + i) % 7),
@@ -52,7 +55,7 @@ export function MiniMonth({
       href={{ pathname: '/', query: { y: year, m: month } }}
       className="card block p-2 transition active:scale-[0.98]"
     >
-      <div className="mb-1 text-center text-sm font-extrabold text-heading">{AR_MONTHS[month - 1]}</div>
+      <div className="mb-1 text-center text-sm font-extrabold text-heading">{monthNames(lang)[month - 1]}</div>
       <div className="grid grid-cols-7 gap-px">
         {grid.weekdayLetters.map((letter, i) => (
           <div key={i} className={`text-center text-[8px] font-bold ${weekendCols[i] ? 'text-national' : 'text-muted'}`}>

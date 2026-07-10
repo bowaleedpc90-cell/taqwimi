@@ -11,6 +11,7 @@ import {
 } from '@/lib/holidayActions';
 import type { AppState } from '@/lib/types';
 import { useApp } from './AppStateProvider';
+import { useLang } from './LanguageProvider';
 import { HolidayFormSheet, type HolidayFormValue } from './HolidayFormSheet';
 
 export type HolidayEditing =
@@ -48,6 +49,7 @@ export function HolidayEditSheets({
   onClose: () => void;
 }) {
   const { update } = useApp();
+  const { t } = useLang();
   if (!editing) return null;
 
   if (editing.mode === 'add') {
@@ -56,7 +58,7 @@ export function HolidayEditSheets({
         key="add"
         open
         onClose={onClose}
-        title="إضافة عطلة / مناسبة"
+        title={t('إضافة عطلة / مناسبة')}
         initial={{ nameAr: '', gregorianDate: editing.date, type: 'custom' }}
         onSave={(v) => {
           update((s) => addCustomHoliday(s, v));
@@ -73,7 +75,7 @@ export function HolidayEditSheets({
         key={`b-${slug}`}
         open
         onClose={onClose}
-        title="تعديل عطلة رسمية"
+        title={t('تعديل عطلة رسمية')}
         initial={value}
         estimatedHint={wasEstimated}
         yearLock={year}
@@ -92,7 +94,7 @@ export function HolidayEditSheets({
           update((s) => deleteBuiltInHoliday(s, year, slug));
           onClose();
         }}
-        deleteLabel="حذف العطلة"
+        deleteLabel={t('حذف العطلة')}
         onRestore={
           edited
             ? () => {
@@ -111,7 +113,7 @@ export function HolidayEditSheets({
       key={`c-${id}`}
       open
       onClose={onClose}
-      title="تعديل مناسبة"
+      title={t('تعديل مناسبة')}
       initial={value}
       onSave={(v) => {
         update((s) => updateCustomHoliday(s, id, v));

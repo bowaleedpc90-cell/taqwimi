@@ -2,19 +2,22 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { AR_MONTHS, AR_WEEKDAYS, HOLIDAY_TYPE_LABEL, HOLIDAY_TYPE_TINT } from '@/lib/constants';
+import { HOLIDAY_TYPE_TINT } from '@/lib/constants';
 import { dayOfWeek, parseYMD, ymd } from '@/lib/dateUtils';
 import { getBuiltInHolidaysForYear } from '@/lib/kuwaitHolidayService';
 import { confirmHoliday, deleteBuiltInHoliday, deleteCustomHoliday, restoreHoliday, restoreYearDefaults } from '@/lib/holidayActions';
-import type { Holiday } from '@/lib/types';
+import type { Holiday, Lang } from '@/lib/types';
 import { useApp } from './AppStateProvider';
 import { useToday } from '@/hooks/useToday';
+import { useLang } from './LanguageProvider';
+import { monthNames, weekdayNames, holidayTypeLabel, holidayName } from '@/lib/i18n';
 import { HolidayEditSheets, builtinEditingFor, type HolidayEditing } from './HolidayEditSheets';
 import { EstimatedBadge } from './EstimatedBadge';
 
-function longDate(iso: string): string {
+function longDate(iso: string, lang: Lang): string {
   const { y, m, d } = parseYMD(iso);
-  return `${AR_WEEKDAYS[dayOfWeek(y, m, d)]}، ${d} ${AR_MONTHS[m - 1]} ${y}`;
+  const sep = lang === 'en' ? ', ' : '، ';
+  return `${weekdayNames(lang)[dayOfWeek(y, m, d)]}${sep}${d} ${monthNames(lang)[m - 1]} ${y}`;
 }
 
 interface Row {
@@ -29,6 +32,7 @@ interface Row {
 
 export function HolidayManager() {
   const { state, hydrated, update } = useApp();
+  const { lang, t } = useLang();
   const today = useToday();
   const [year, setYear] = useState<number | null>(null);
   const [editing, setEditing] = useState<HolidayEditing>(null);
@@ -70,31 +74,30 @@ export function HolidayManager() {
   return (
     <div>
       <div className="mb-3 flex items-center gap-2">
-        <Link href="/settings" aria-label="رجوع" className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
+        <Link href="/settings" aria-label={t('رجوع')} className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d={lang === 'en' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} /></svg>
         </Link>
         <h1 className="flex items-center gap-2 text-xl font-extrabold text-heading">
-          <span aria-hidden>📅</span> إدارة العطل والمناسبات
+          <span aria-hidden>📅</span> {t('إدارة العطل والمناسبات')}
         </h1>
       </div>
 
       <p className="mb-3 rounded-xl border border-line bg-canvas px-3 py-2 text-xs leading-relaxed text-muted">
-        العطل بالكويت تتغيّر حسب قرارات الحكومة ورؤية الهلال. تقدر تعدّل تاريخ أي عطلة أو تحذفها أو تضيف مناسبة جديدة —
-        وكل تغيير يُحفظ على جهازك وينعكس في الرزنامة والطباعة. المناسبات المستقبلية تظهر بشارة «تقديري» حتى تثبّتها.
+        {t('العطل بالكويت تتغيّر حسب قرارات الحكومة ورؤية الهلال. تقدر تعدّل تاريخ أي عطلة أو تحذفها أو تضيف مناسبة جديدة — وكل تغيير يُحفظ على جهازك وينعكس في الرزنامة والطباعة. المناسبات المستقبلية تظهر بشارة «تقديري» حتى تثبّتها.')}
       </p>
 
       <div className="mb-3 flex items-center justify-between gap-2">
-        <button type="button" onClick={() => setYear(y - 1)} aria-label="السنة السابقة" className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
+        <button type="button" onClick={() => setYear(y - 1)} aria-label={t('السنة السابقة')} className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d={lang === 'en' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} /></svg>
         </button>
         <div className="num text-lg font-extrabold text-heading">{y}</div>
-        <button type="button" onClick={() => setYear(y + 1)} aria-label="السنة التالية" className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+        <button type="button" onClick={() => setYear(y + 1)} aria-label={t('السنة التالية')} className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d={lang === 'en' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} /></svg>
         </button>
       </div>
 
       <button type="button" onClick={() => setEditing({ mode: 'add', date: defaultAddDate })} className="btn btn-primary mb-3 w-full">
-        ＋ إضافة عطلة / مناسبة
+        ＋ {t('إضافة عطلة / مناسبة')}
       </button>
 
       <ul className="flex flex-col gap-2">
@@ -110,34 +113,34 @@ export function HolidayManager() {
               className="min-w-0 flex-1 text-start"
             >
               <div className="flex items-center gap-2">
-                <span className={`truncate font-bold text-ink ${r.deleted ? 'line-through' : ''}`}>{r.effective.nameAr}</span>
+                <span className={`truncate font-bold text-ink ${r.deleted ? 'line-through' : ''}`}>{holidayName(lang, r.effective)}</span>
                 {r.effective.isEstimated && !r.deleted && <EstimatedBadge />}
-                {r.edited && <span className="rounded bg-gold-soft px-1 text-[9px] font-bold text-gold">معدّلة</span>}
-                {r.deleted && <span className="rounded bg-danger-soft px-1 text-[9px] font-bold text-danger">محذوفة</span>}
+                {r.edited && <span className="rounded bg-gold-soft px-1 text-[9px] font-bold text-gold">{t('معدّلة')}</span>}
+                {r.deleted && <span className="rounded bg-danger-soft px-1 text-[9px] font-bold text-danger">{t('محذوفة')}</span>}
               </div>
               <div className="mt-0.5 flex items-center gap-2 text-xs text-muted">
-                <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${HOLIDAY_TYPE_TINT[r.effective.type]}`}>{HOLIDAY_TYPE_LABEL[r.effective.type]}</span>
-                <span className="num">{longDate(r.effective.gregorianDate)}</span>
+                <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${HOLIDAY_TYPE_TINT[r.effective.type]}`}>{holidayTypeLabel(lang, r.effective.type)}</span>
+                <span className="num">{longDate(r.effective.gregorianDate, lang)}</span>
               </div>
             </button>
 
             {r.kind === 'builtin' && r.effective.isEstimated && !r.deleted && (
               <button type="button" onClick={() => update((s) => confirmHoliday(s, y, r.slug!))} className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg bg-national-soft px-3 text-xs font-bold text-national">
-                تثبيت
+                {t('تثبيت')}
               </button>
             )}
             {r.deleted ? (
               <button type="button" onClick={() => update((s) => restoreHoliday(s, y, r.slug!))} className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg bg-subtle px-3 text-xs font-bold text-heading">
-                استعادة
+                {t('استعادة')}
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => (r.kind === 'builtin' ? update((s) => deleteBuiltInHoliday(s, y, r.slug!)) : update((s) => deleteCustomHoliday(s, r.id!)))}
-                aria-label="حذف"
+                aria-label={t('حذف')}
                 className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg bg-danger-soft px-3 text-xs font-bold text-danger"
               >
-                حذف
+                {t('حذف')}
               </button>
             )}
           </li>
@@ -145,21 +148,21 @@ export function HolidayManager() {
       </ul>
 
       <section className="card mt-4 p-4">
-        <div className="mb-1 font-bold text-heading">استعادة العطل الرسمية</div>
+        <div className="mb-1 font-bold text-heading">{t('استعادة العطل الرسمية')}</div>
         <p className="mb-3 text-xs text-muted">
-          يرجّع كل العطل الرسمية لسنة {y} لتواريخها الافتراضية ويلغي تعديلاتك عليها. لا يمسّ المناسبات التي أضفتها بنفسك.
+          {t('يرجّع كل العطل الرسمية لسنة {n} لتواريخها الافتراضية ويلغي تعديلاتك عليها. لا يمسّ المناسبات التي أضفتها بنفسك.', { n: y })}
         </p>
         {!confirmReset ? (
           <button type="button" onClick={() => setConfirmReset(true)} className="btn btn-ghost w-full">
-            استعادة عطل {y} الافتراضية
+            {t('استعادة عطل {n} الافتراضية', { n: y })}
           </button>
         ) : (
           <div className="flex gap-2">
             <button type="button" onClick={() => { update((s) => restoreYearDefaults(s, y)); setConfirmReset(false); }} className="btn btn-danger flex-1">
-              تأكيد الاستعادة
+              {t('تأكيد الاستعادة')}
             </button>
             <button type="button" onClick={() => setConfirmReset(false)} className="btn btn-ghost flex-1">
-              إلغاء
+              {t('إلغاء')}
             </button>
           </div>
         )}
