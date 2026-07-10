@@ -69,7 +69,7 @@ export function Track180RangeSheet({ initialStart, onClose }: { initialStart: st
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         <div>
-          <label htmlFor={startId} className="mb-1.5 block text-sm font-bold text-heading">
+          <label htmlFor={startId} className="mb-1.5 block text-center text-sm font-bold text-heading">
             {t('من')}
           </label>
           <input
@@ -81,7 +81,7 @@ export function Track180RangeSheet({ initialStart, onClose }: { initialStart: st
           />
         </div>
         <div>
-          <label htmlFor={endId} className="mb-1.5 block text-sm font-bold text-heading">
+          <label htmlFor={endId} className="mb-1.5 block text-center text-sm font-bold text-heading">
             {t('إلى')}
           </label>
           <input

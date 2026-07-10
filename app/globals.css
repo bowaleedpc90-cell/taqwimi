@@ -130,14 +130,11 @@ body {
     @apply w-full rounded-xl border border-line bg-canvas px-3 py-3 text-base outline-none focus:border-heading focus:ring-2 focus:ring-heading/30;
   }
   /* حقول التاريخ الأصلية تبقى LTR دائمًا كي لا تتبعثر مقاطع اليوم/الشهر/السنة
-     داخل الواجهة العربية (RTL). محاذاة للبداية المنطقية لتتماشى مع تسميتها. */
+     داخل الواجهة العربية (RTL). التوسيط يتجنّب تداخل القيمة مع عناصر iOS الأصلية
+     عند حواف الحقل، ويعمل بنظافة في الاتجاهين. */
   input[type='date'].field {
     direction: ltr;
-    text-align: start;
-  }
-  :root[dir='rtl'] input[type='date'].field,
-  [dir='rtl'] input[type='date'].field {
-    text-align: end;
+    text-align: center;
   }
 }
 
@@ -213,5 +210,17 @@ body {
   .general-note {
     overflow: visible !important;
     white-space: normal !important;
+  }
+}
+
+/* الطباعة الأفقية أقصر عموديًا: ندع الشبكة وصفوف الأسابيع تأخذ ارتفاعها الطبيعي
+   (بدل توزيع متساوٍ يقصّ الأيام المزدحمة). العمودي يبقى يملأ الصفحة كما هو. */
+@media print and (orientation: landscape) {
+  .print-page .cal-grid {
+    flex: 0 0 auto;
+  }
+  .print-page .cal-row {
+    flex: 0 0 auto;
+    overflow: visible;
   }
 }

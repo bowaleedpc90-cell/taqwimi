@@ -55,8 +55,8 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
           ))}
         </div>
 
-        {/* الشبكة — تملأ ارتفاع الصفحة */}
-        <div className="flex min-h-0 flex-1 flex-col gap-px">
+        {/* الشبكة — تملأ ارتفاع الصفحة (وفي الطباعة الأفقية تأخذ ارتفاعها الطبيعي) */}
+        <div className="cal-grid flex min-h-0 flex-1 flex-col gap-px">
           {weeks.map((week, wi) => (
             <div key={wi} className="cal-row grid min-h-0 flex-1 grid-cols-7 gap-px overflow-hidden">
               {week.map((cell, ci) => (
@@ -67,7 +67,7 @@ export function PrintMonth({ vm }: { vm: PrintMonthVM }) {
                   {cell.inMonth && (
                     <>
                       <div className="flex items-start justify-between">
-                        <span className="num text-[15px] font-bold text-ink">{cell.day}</span>
+                        <span className="num text-[15px] font-bold leading-none text-ink">{cell.day}</span>
                         {cell.holiday?.isEstimated && <EstimatedBadge />}
                       </div>
                       {cell.holiday && (

@@ -13,11 +13,13 @@ type Scope = 'month' | 'year';
 type Paper = 'A4' | 'A3';
 type Orientation = 'portrait' | 'landscape';
 
-// ارتفاع منطقة المحتوى (مم) بعد هوامش 10مم علوية وسفلية.
+// ارتفاع منطقة المحتوى (مم). نطرح هوامش الطباعة (10مم علوي+سفلي = 20) إضافةً إلى
+// احتياطي ~26مم لترويسة/تذييل المتصفح التلقائي (خصوصًا iOS Safari الذي يضيف الرابط
+// والتاريخ ورقم الصفحة) كي لا يطفح الشهر إلى صفحة ثانية.
 function pageContentMm(paper: Paper, orientation: Orientation): number {
   const dims: Record<Paper, [number, number]> = { A4: [210, 297], A3: [297, 420] };
   const [w, h] = dims[paper];
-  return (orientation === 'portrait' ? h : w) - 20;
+  return (orientation === 'portrait' ? h : w) - 46;
 }
 
 function SegButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
