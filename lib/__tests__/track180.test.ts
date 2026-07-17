@@ -11,8 +11,52 @@ import {
   TRACK180_TARGET,
 } from '../track180';
 import { addCustomHoliday, deleteBuiltInHoliday } from '../holidayActions';
+import { clampYear, isSupportedYear, MAX_YEAR, MIN_YEAR } from '../dateUtils';
 import { defaultState, loadState } from '../storage';
 import type { AppState, Track180LeaveType } from '../types';
+
+/* ------------------------- حرّاس الأمان (تحقّق الإدخال) ------------------------- */
+
+test('isSupportedYear — يرفض ما يتجاوز مدى Date ويقبل المدى المدعوم', () => {
+  assert.equal(isSupportedYear(2026), true);
+  assert.equal(isSupportedYear(MIN_YEAR), true);
+  assert.equal(isSupportedYear(MAX_YEAR), true);
+  // القيم التي كانت تُسقط محرّك العطل بـ RangeError من الرابط ?y=
+  assert.equal(isSupportedYear(999999999999), false);
+  assert.equal(isSupportedYear(275761), false);
+  assert.equal(isSupportedYear(1969), false);
+  assert.equal(isSupportedYear(NaN), false);
+  assert.equal(isSupportedYear(Infinity), false);
+  assert.equal(isSupportedYear(2026.5), false);
+});
+
+test('clampYear — يحصر أزرار التنقّل داخل المدى', () => {
+  assert.equal(clampYear(2026), 2026);
+  assert.equal(clampYear(MAX_YEAR + 1), MAX_YEAR);
+  assert.equal(clampYear(MIN_YEAR - 1), MIN_YEAR);
+});
+
+test('loadState — يُسقط قيم track180Days المجهولة ويُبقي الصحيحة', () => {
+  const stored = {
+    version: 2,
+    settings: { weekStart: 0, weekendDows: [5, 6], showHolidays: true, showReligious: true, showNotes: true, track180: true },
+    items: [], dayNotes: {}, generalNotes: {}, customHolidays: [], holidayOverrides: {},
+    track180Days: {
+      '2026-07-05': 'sick',        // صحيحة — تبقى
+      '2026-07-06': 'perm',        // نوع مجهول — تُسقط
+      'not-a-date': 'annual',      // مفتاح غير صالح — يُسقط
+      '2026-07-07': 42,            // ليست نصًا — تُسقط
+    },
+  };
+  const g = globalThis as unknown as { window?: unknown };
+  g.window = { localStorage: { getItem: () => JSON.stringify(stored), setItem: () => {} } };
+  try {
+    const s = loadState();
+    assert.deepEqual(s.track180Days, { '2026-07-05': 'sick' });
+  } finally {
+    delete g.window;
+  }
+});
 
 function stateWith(days: Record<string, Track180LeaveType> = {}): AppState {
   return { ...defaultState(), track180Days: days };

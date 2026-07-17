@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # يرفع الـ commit SHA المثبّتة في .github/workflows عبر PR مراجَع،
+  # فيبقى التثبيت آمنًا دون أن يتجمّد على إصدار قديم.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: 'chore(ci)'
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: 'chore(deps)'
+    # تحديثات الأمان تصل دائمًا؛ نجمّع الباقي لتقليل الضجيج.
+    groups:
+      dev-dependencies:
+        dependency-type: development

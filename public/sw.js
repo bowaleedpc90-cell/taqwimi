@@ -1,9 +1,27 @@
 /* Service Worker أساسي لتقويمي — عمل دون اتصال.
    الصفحات: شبكة أولاً مع رجوع للكاش (محتوى محدّث + عمل offline).
    الأصول الثابتة: كاش أولاً (سريع). كل شيء على نفس الأصل فقط. */
-const CACHE = 'taqwimi-v1';
+// اسم الكاش مشتقّ من نسخة البناء (تُمرَّر عند التسجيل: sw.js?v=<buildId>).
+// كل نشر يبدأ كاشًا جديدًا و activate يحذف القديم — فيوجد مسار إبطال طارئ
+// بدل كاش أبدي لا يُفرَّغ. الرجوع إلى 'dev' عند غياب المعامل.
+const VERSION = new URL(self.location.href).searchParams.get('v') || 'dev';
+const CACHE = `taqwimi-${VERSION}`;
 
-self.addEventListener('install', () => self.skipWaiting());
+// نُخزّن قوقعة التطبيق مسبقًا داخل الكاش الجديد *قبل* أن يحذف activate الكاش القديم،
+// وإلا لبقي المستخدم بلا كاش (وبلا عمل دون اتصال) بعد كل نشر حتى أول تحميل كامل.
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    (async () => {
+      try {
+        const cache = await caches.open(CACHE);
+        await cache.add(new Request(self.registration.scope, { cache: 'reload' }));
+      } catch {
+        /* الشبكة غير متاحة وقت التثبيت — نكمل، والكاش يمتلئ عند أول جلب */
+      }
+      await self.skipWaiting();
+    })(),
+  );
+});
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(

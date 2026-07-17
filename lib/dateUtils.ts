@@ -5,6 +5,24 @@ import type { Lang } from './types';
 // للعرض. كل حساب لليوم من الأسبوع يتم بحساب صحيح صرف (Sakamoto) → لا انزياح بسبب
 // المنطقة الزمنية. «اليوم» يُشتق من صيغة الكويت (en-CA + Asia/Kuwait) على العميل فقط.
 
+/**
+ * مدى السنوات المدعوم. الحدّ الأعلى يحمي محرّك العطل الهجري: سنة تتجاوز مدى
+ * تواريخ ECMAScript (±275760) تُنتج Invalid Date فيرمي Intl.formatToParts
+ * استثناء RangeError أثناء العرض. أي سنة من الرابط لازم تمرّ على isSupportedYear.
+ */
+export const MIN_YEAR = 1970;
+export const MAX_YEAR = 2200;
+
+/** سنة ضمن المدى المدعوم؟ يرفض NaN و Infinity والكسور صراحةً. */
+export function isSupportedYear(y: number): boolean {
+  return Number.isInteger(y) && y >= MIN_YEAR && y <= MAX_YEAR;
+}
+
+/** يحصر السنة داخل المدى المدعوم (لأزرار التنقّل التي تزيد/تنقص بلا حدّ). */
+export function clampYear(y: number): number {
+  return Math.min(MAX_YEAR, Math.max(MIN_YEAR, y));
+}
+
 export function pad2(n: number): string {
   return String(n).padStart(2, '0');
 }

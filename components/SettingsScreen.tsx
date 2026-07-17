@@ -131,8 +131,10 @@ export function SettingsScreen() {
         )}
       </section>
 
-      <p className="mt-6 text-center text-xs text-muted">
+      <p className="mt-6 text-center text-xs leading-relaxed text-muted">
         {t('تقويمي — كل بياناتك محفوظة على جهازك فقط، بدون حساب أو خادم.')}
+        <br />
+        {t('تُخزَّن بنصّ صريح في متصفّح هذا الجهاز ولا تُرسَل لأي مكان — فلا تستخدم «تتبع ١٨٠ يوم» على جهاز مشترك.')}
       </p>
 
       <BrandFooter />

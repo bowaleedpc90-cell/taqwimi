@@ -1,5 +1,22 @@
 import { STORAGE_KEY } from './constants';
-import type { AppState, Settings } from './types';
+import type { AppState, Settings, Track180LeaveType } from './types';
+
+const TRACK180_VALUES: readonly Track180LeaveType[] = ['annual', 'sick', 'emergency', 'other'];
+
+/**
+ * التخزين المحلي حدّ ثقة: أي سكربت على الأصل (أو المستخدم نفسه) يقدر يكتب فيه.
+ * نتحقّق من القيم لا من الوعاء فقط — قيمة مجهولة تُسقط بحثًا في خريطة التسميات.
+ */
+function sanitizeTrack180Days(raw: unknown): Record<string, Track180LeaveType> {
+  if (!raw || typeof raw !== 'object') return {};
+  const out: Record<string, Track180LeaveType> = {};
+  for (const [iso, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(iso) && TRACK180_VALUES.includes(v as Track180LeaveType)) {
+      out[iso] = v as Track180LeaveType;
+    }
+  }
+  return out;
+}
 
 export const DEFAULT_SETTINGS: Settings = {
   weekStart: 0,          // الأحد
@@ -40,7 +57,7 @@ export function loadState(): AppState {
       customHolidays: Array.isArray(p.customHolidays) ? p.customHolidays : [],
       holidayOverrides:
         p.holidayOverrides && typeof p.holidayOverrides === 'object' ? p.holidayOverrides : {},
-      track180Days: p.track180Days && typeof p.track180Days === 'object' ? p.track180Days : {},
+      track180Days: sanitizeTrack180Days(p.track180Days),
     };
   } catch {
     return d;

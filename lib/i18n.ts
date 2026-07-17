@@ -181,6 +181,8 @@ export const EN: Record<string, string> = {
   'تأكيد الحذف': 'Confirm delete',
   'تقويمي — كل بياناتك محفوظة على جهازك فقط، بدون حساب أو خادم.':
     'تقويمي — all your data is saved on your device only, no account or server.',
+  'تُخزَّن بنصّ صريح في متصفّح هذا الجهاز ولا تُرسَل لأي مكان — فلا تستخدم «تتبع ١٨٠ يوم» على جهاز مشترك.':
+    'It is stored in plain text in this device’s browser and never sent anywhere — so avoid using 180-Day Tracking on a shared device.',
   'اللغة': 'Language',
 
   // العطل + الشارات

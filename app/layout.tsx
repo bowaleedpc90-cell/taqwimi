@@ -59,10 +59,53 @@ const themeInit = `(function(){try{var t=localStorage.getItem('taqwimi.theme');i
 // الإنجليزية تقلب الاتجاه إلى LTR.
 const langInit = `(function(){try{var l=localStorage.getItem('taqwimi.lang');if(l!=='en'){l='ar';}document.documentElement.lang=l;document.documentElement.dir=l==='en'?'ltr':'rtl';}catch(e){}})();`;
 
+// كسر التأطير: GitHub Pages لا يسمح برأس X-Frame-Options، و frame-ancestors
+// يتجاهله المتصفح داخل <meta> — فهذا هو المتاح لمنع تأطير الموقع وخداع
+// المستخدم لضغط إجراء مدمّر (تصفير البيانات). ليس بديلاً كاملاً عن الرأس.
+const frameBust = `(function(){try{if(self!==top){top.location=self.location;}}catch(e){}})();`;
+
+/**
+ * CSP عبر <meta> — الاستضافة الثابتة (GitHub Pages) لا تسمح برؤوس مخصّصة.
+ *
+ * حدوده بصراحة — لا تُبالغ في الاعتماد عليه:
+ * 1) Next.js يرفع وسوم <script> الخاصة به فوق هذا الوسم في <head>، والسياسة عبر
+ *    <meta> تحكم ما يُجلب *بعد* تحليلها فقط — فحِزم التطبيق الأولى لا تحكمها
+ *    (وهي أصلًا first-party على نفس الأصل، أي أن 'self' كان سيسمح بها).
+ * 2) التصدير الثابت لا يدعم nonce (لا خادم)، و Next يحقن سكربتات inline للترطيب،
+ *    فـ 'unsafe-inline' ضرورة — أي أن CSP هنا *لا* يوقف تنفيذ سكربت مُحقَن inline.
+ *
+ * ما يوقفه فعلًا (وهو سبب بقائه): تنفيذ زمن التشغيل — تحميل سكربت من أصل خارجي،
+ * وتسريب البيانات عبر fetch/XHR (connect-src) أو إرسال نموذج (form-action)،
+ * وخطف base-uri، و object/embed. أي أن قيمته الأساسية: منع *خروج* البيانات.
+ *
+ * frame-ancestors غير مُدرج عمدًا: المتصفح يتجاهله داخل <meta> (يحتاج رأسًا حقيقيًا).
+ * الإغلاق الكامل (CSP كرأس + frame-ancestors + HSTS) يحتاج بروكسي مثل Cloudflare.
+ */
+const csp = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  // لا نماذج في التطبيق إطلاقًا؛ لو أُضيف <form> يومًا لازم تعديل هذه السياسة.
+  "form-action 'none'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  // لا توجد data: URIs في المخرَج — فلا نمنحها صلاحية بلا داعٍ.
+  "img-src 'self'",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "worker-src 'self'",
+  "manifest-src 'self'",
+].join('; ');
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning className={`${cairo.variable} ${tajawal.variable}`}>
+      <head>
+        <meta httpEquiv="Content-Security-Policy" content={csp} />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+      </head>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: frameBust }} />
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <script dangerouslySetInnerHTML={{ __html: langInit }} />
         <LanguageProvider>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { parseYMD } from '@/lib/dateUtils';
+import { clampYear, MIN_YEAR, parseYMD } from '@/lib/dateUtils';
 import { effectiveHolidayMap } from '@/lib/kuwaitHolidayService';
 import type { Holiday } from '@/lib/types';
 import { useApp } from './AppStateProvider';
@@ -38,7 +38,7 @@ export function YearView() {
       <div className="mb-3 flex items-center justify-between gap-2">
         <button
           type="button"
-          onClick={() => setYear((y) => (y ?? 0) - 1)}
+          onClick={() => setYear((y) => clampYear((y ?? MIN_YEAR) - 1))}
           aria-label={t('السنة السابقة')}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95"
         >
@@ -58,7 +58,7 @@ export function YearView() {
         </div>
         <button
           type="button"
-          onClick={() => setYear((y) => (y ?? 0) + 1)}
+          onClick={() => setYear((y) => clampYear((y ?? MIN_YEAR) + 1))}
           aria-label={t('السنة التالية')}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-subtle text-heading active:scale-95"
         >

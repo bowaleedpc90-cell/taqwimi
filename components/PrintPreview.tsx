@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { parseYMD, shiftMonth } from '@/lib/dateUtils';
+import { isSupportedYear, parseYMD, shiftMonth } from '@/lib/dateUtils';
 import { monthNames } from '@/lib/i18n';
 import { buildPrintMonth, buildPrintYear } from '@/lib/printTemplateEngine';
 import { useApp } from './AppStateProvider';
@@ -51,7 +51,8 @@ export function PrintPreview() {
     const qy = Number(p.get('y'));
     const qm = Number(p.get('m'));
     if (qScope === 'year' || qScope === 'month') setScope(qScope);
-    if (qy >= 1970) {
+    // نفس حدّ السنة كالرزنامة: قيمة خارج المدى تُسقط محرّك الهجري بـ RangeError.
+    if (isSupportedYear(qy)) {
       setYm({ y: qy, m: qm >= 1 && qm <= 12 ? qm : 1 });
       setReady(true);
     } else if (today) {

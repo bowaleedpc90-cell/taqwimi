@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { buildMonthGrid } from '@/lib/calendarEngine';
-import { formatMonthTitle, monthKey, parseYMD, shiftMonth } from '@/lib/dateUtils';
+import { formatMonthTitle, isSupportedYear, monthKey, parseYMD, shiftMonth } from '@/lib/dateUtils';
 import { hijriMonthLabel } from '@/lib/hijriUtils';
 import { effectiveHolidayMap } from '@/lib/kuwaitHolidayService';
 import type { Holiday, Settings } from '@/lib/types';
@@ -43,7 +43,9 @@ export function CalendarShell() {
     const params = new URLSearchParams(window.location.search);
     const qy = Number(params.get('y'));
     const qm = Number(params.get('m'));
-    if (qy >= 1970 && qm >= 1 && qm <= 12) {
+    // حدّ السنة من الطرفين: قيمة ضخمة تتجاوز مدى Date تُسقط محرّك العطل بـ RangeError.
+    // Number.isInteger يرفض NaN/Infinity/الكسور صراحةً بدل الاتكال على مقارنة كاذبة.
+    if (isSupportedYear(qy) && qm >= 1 && qm <= 12) {
       setYm({ y: qy, m: qm });
       return;
     }
