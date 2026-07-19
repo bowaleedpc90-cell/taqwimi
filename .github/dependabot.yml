@@ -29,3 +29,6 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+
+# ملاحظة تشغيلية: فرع main محمي (enforce_admins، بلا force-push، بلا حذف).
+# فرع gh-pages متروك بلا حماية عمدًا لأن النشر يكتب عليه آليًا عبر Actions.
