@@ -8,6 +8,11 @@ updates:
       interval: monthly
     commit-message:
       prefix: 'chore(ci)'
+    # سياسة: لا ترقيات رئيسية تلقائية — تُراجَع وتُختبر يدويًا لأنها كاسرة.
+    # للتراجع: احذف كتلة ignore هذه فيعود Dependabot يقترح الرئيسية.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: /
@@ -15,6 +20,11 @@ updates:
       interval: monthly
     commit-message:
       prefix: 'chore(deps)'
+    # نفس السياسة: لا ترقيات رئيسية تلقائية (كانت مجموعة dev تخفي 5 ترقيات
+    # رئيسية خلف عنوان محايد). تنبيهات الأمان تصل دائمًا رغم ignore.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
     # تحديثات الأمان تصل دائمًا؛ نجمّع الباقي لتقليل الضجيج.
     groups:
       dev-dependencies:
